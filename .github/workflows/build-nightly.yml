@@ -133,7 +133,7 @@ jobs:
           git tag nightly
 
       - name: Создать/обновить Pre-release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: nightly
           name: "Ночная сборка (${{ steps.date.outputs.date }})"
@@ -147,7 +147,7 @@ jobs:
 
       - name: Загрузить сайт для GitHub Pages
         if: steps.meta.outputs.site == 'true' && hashFiles('book/**') != ''
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: book/
 
@@ -161,4 +161,4 @@ jobs:
     steps:
       - name: Опубликовать GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
