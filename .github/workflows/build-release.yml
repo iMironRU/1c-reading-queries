@@ -57,17 +57,8 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended \
-            fonts-jetbrains-mono
-          # PT Serif — скачать из GitHub
-          mkdir -p ~/.local/share/fonts
-          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Regular.ttf \
-            -o ~/.local/share/fonts/PTSerif-Regular.ttf 2>/dev/null || true
-          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Bold.ttf \
-            -o ~/.local/share/fonts/PTSerif-Bold.ttf 2>/dev/null || true
-          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Italic.ttf \
-            -o ~/.local/share/fonts/PTSerif-Italic.ttf 2>/dev/null || true
-          fc-cache -f
+            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended lmodern \
+            fonts-jetbrains-mono fonts-paratype
 
       - name: Собрать форматы
         run: |

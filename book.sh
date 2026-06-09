@@ -47,7 +47,8 @@ def get(obj, path, default=None):
     return obj
 with open('metadata.yaml') as f:
     d = yaml.safe_load(f)
-print(get(d, '$1', '${2:-}'))
+val = get(d, '$1', '${2:-}')
+print('' if val is None else val)
 "
 }
 
@@ -90,7 +91,15 @@ cmd_init() {
     local epub=true fb2=true pdf_a5=true pdf_a4=false
     local html=true docx=true site=true
 
-    ask_bool() { read -rp "    $1 [${2}]: " v; [[ -n "$v" ]] && echo "$v" || echo "$2"; }
+    ask_bool() {
+        local _prompt="$1" _default="$2" _v
+        read -rp "    ${_prompt} [${_default}]: " _v
+        case "${_v:-$_default}" in
+            y|Y|yes|YES|true|True|TRUE)    echo "true"  ;;
+            n|N|no|NO|false|False|FALSE)   echo "false" ;;
+            *)                             echo "$_default" ;;
+        esac
+    }
     epub=$(ask_bool "EPUB" "$epub")
     fb2=$(ask_bool "FB2" "$fb2")
     pdf_a5=$(ask_bool "PDF A5" "$pdf_a5")
@@ -163,49 +172,90 @@ status: draft
 > Замените этот текст содержимым первой главы.
 MD
 
-    # Заменить README шаблона на README книги
-    local repo_name; repo_name=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || pwd)")
-    local author_handle; author_handle=$(echo "$author_url" | sed 's|.*/||')
+    # Заменить README шаблона на README книги (reader-first формат)
     cat > README.md << BOOKREADME
 # ${title}
 
+<img src="assets/img/cover.png" width="180" align="right" alt="Обложка">
+
+> Краткое описание книги — замените этот текст одной строкой.
+
 [![Статус](https://img.shields.io/badge/статус-черновик-yellow)](CHANGELOG.md)
 [![Версия](https://img.shields.io/badge/версия-0.1.0-blue)](CHANGELOG.md)
+[![Лицензия](https://img.shields.io/badge/лицензия-CC_BY_4.0-green)](https://creativecommons.org/licenses/by/4.0/)
 
-> Краткое описание — замените этот текст.
+<br clear="right">
 
-## Читать
+---
+
+## Как читать
 
 | Формат | Ссылка |
 |--------|--------|
 | 🌐 Онлайн | [Открыть сайт](${site_url}) |
-| 📖 EPUB | [Releases](../../releases) |
-| 📄 PDF A5 | [Releases](../../releases) |
-| 📋 FB2 | [Releases](../../releases) |
+| 📖 EPUB | [Releases → последняя версия](../../releases/latest) |
+| 📄 PDF A5 | [Releases → последняя версия](../../releases/latest) |
+| 📋 FB2 | [Releases → последняя версия](../../releases/latest) |
+| 📝 DOCX | [Releases → последняя версия](../../releases/latest) |
+
+---
+
+## О книге
+
+Замените этот раздел кратким описанием: для кого книга, главная идея, что читатель получит.
+
+---
 
 ## Прогресс
 
-| Модуль | Название | Статус |
-|--------|----------|--------|
-| 0 | Введение | ✏️ в работе |
+| Модуль | Название | §§ | Статус |
+|:------:|----------|:--:|:------:|
+| 0 | Введение | 1 | ✏️ черновик |
 
-## Для контрибьюторов
+---
 
-\`\`\`bash
-git clone <этот-репозиторий> && cd <папка>
-./book.sh status
-./book.sh build
-\`\`\`
+## Обратная связь
+
+Замечания, ошибки, предложения — [открыть Issue](../../issues/new).
+
+---
+
+## Лицензия
+
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — читать, распространять, адаптировать с указанием авторства.
+
+---
+
+<details>
+<summary>Для контрибьюторов и разработчиков</summary>
+
+### Собрать локально
 
 Требования: \`pandoc\`, \`python3\` + \`pyyaml\`, \`mdbook\`.
 
-## Журнал изменений
+\`\`\`bash
+git clone <этот-репозиторий> && cd <папка>
+./book.sh status   # прогресс по главам
+./book.sh build    # собрать все форматы
+\`\`\`
 
-[CHANGELOG.md](CHANGELOG.md)
+### Структура репозитория
 
-## Автор
+\`\`\`
+chapters/      — параграфы (NN_модуль/NN-MM_параграф.md)
+assets/img/    — обложка и иллюстрации
+spec/          — конституция, спецификация, журнал решений
+\`\`\`
+
+### Сборка на GitHub
+
+При создании тега \`v*\` GitHub Actions автоматически собирает все форматы и публикует Release.
+
+### Автор
 
 [${author}](${author_url})
+
+</details>
 BOOKREADME
 
     success "Книга инициализирована!"
@@ -363,7 +413,7 @@ print(m.group(1) if m else 'ready')
     if [[ "$(fmt html)" == "True" || "$(fmt html)" == "true" ]]; then
         info "HTML..."
         pandoc "${file_list[@]}" "${pandoc_flags[@]}" \
-            --embed-resources --standalone -o "${base}.html"
+            --embed-resources -o "${base}.html"
         success "→ ${base}.html"
     fi
 
@@ -394,6 +444,37 @@ print(m.group(1) if m else 'ready')
         else
             warn "xelatex не найден, PDF пропущен. Установите TeX Live."
         fi
+    fi
+
+    # PDF A4
+    if [[ "$(fmt pdf_a4)" == "True" || "$(fmt pdf_a4)" == "true" ]]; then
+        if command -v xelatex &>/dev/null; then
+            info "PDF A4..."
+            local margin_a4; margin_a4=$(read_meta 'pdf.margin_a4')
+            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" \
+                -V papersize=a4 \
+                -V "geometry:${margin_a4}" \
+                -V mainfont="$(read_meta 'pdf.font_main')" \
+                -V monofont="$(read_meta 'pdf.font_mono')" \
+                -V fontsize="$(read_meta 'pdf.font_size')" \
+                --pdf-engine=xelatex \
+                -o "${base}_a4.pdf"; then
+                success "→ ${base}_a4.pdf"
+            else
+                warn "PDF A4 не собран — ошибка xelatex (см. лог выше)"
+            fi
+        else
+            warn "xelatex не найден, PDF A4 пропущен."
+        fi
+    fi
+
+    # DOCX A4 (требует assets/reference-a4.docx для полей; без него — стандартный DOCX)
+    if [[ "$(fmt docx_a4)" == "True" || "$(fmt docx_a4)" == "true" ]]; then
+        info "DOCX A4..."
+        local ref_arg=()
+        [[ -f assets/reference-a4.docx ]] && ref_arg=(--reference-doc=assets/reference-a4.docx)
+        pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${ref_arg[@]}" -o "${base}_a4.docx"
+        success "→ ${base}_a4.docx"
     fi
 
     # Сайт mdBook
@@ -440,8 +521,8 @@ print(m.group(1) if m else 'ready')
 
             local rel="${file}"
             local module; module=$(echo "$file" | cut -d/ -f2)
-            local title_line; title_line=$(grep -m1 "^# " "$file" 2>/dev/null | sed 's/^# //' || echo "$rel")
-            local prefix=""
+            local title_line; title_line=$(grep -m1 "^# " "$file" 2>/dev/null | sed 's/^# //')
+            [[ -z "$title_line" ]] && title_line=$(basename "${file%.md}" | sed 's/^[0-9-]*_*//')
 
             if [[ "$module" != "$prev_module" ]]; then
                 local module_title; module_title=$(echo "$module" | sed 's/^[0-9]*_//' | tr '_' ' ')
@@ -449,16 +530,14 @@ print(m.group(1) if m else 'ready')
                 echo "## $module_title"
                 echo ""
                 prev_module="$module"
-            else
-                prefix="    "
             fi
 
-            # Добавить иконку черновика
+            # Добавить иконку статуса
             local label="$title_line"
             [[ "$status" == "draft" ]] && label="✏️ $title_line (черновик)"
             [[ "$status" == "review" ]] && label="🔍 $title_line"
 
-            echo "${prefix}- [${label}](${rel})"
+            echo "- [${label}](${rel})"
         done < <(find chapters -name "*.md" ! -name "_*.md" -print0 | sort -z)
     } > SUMMARY.md
 }
@@ -528,31 +607,35 @@ cmd_release() {
 
     # Добавить запись в CHANGELOG.md
     local date; date=$(date +%Y-%m-%d)
-    local new_entry="## [v${new_version}] — ${date}\n\n"
-    for change in "${changes[@]}"; do
-        new_entry+="- ${change}\n"
-    done
-    new_entry+="\n"
+    # Запись в файл — обходит проблему спецсимволов (кавычки, слэши) в Python
+    local entry_file; entry_file=$(mktemp)
+    {
+        printf "## [v%s] — %s\n\n" "${new_version}" "${date}"
+        for change in "${changes[@]}"; do
+            printf "- %s\n" "${change}"
+        done
+        printf "\n"
+    } > "$entry_file"
 
     if [[ -f CHANGELOG.md ]]; then
-        # Вставить после заголовка (первой строки с #)
-        python3 - << PY
-import re
+        # Вставить после первого заголовка
+        ENTRY_FILE="$entry_file" python3 - << 'PY'
+import os, re
+entry = open(os.environ['ENTRY_FILE']).read()
 with open('CHANGELOG.md', 'r') as f:
     content = f.read()
-# Найти место после первого заголовка
 m = re.search(r'^(# .+\n)', content, re.MULTILINE)
 if m:
-    insert_pos = m.end()
-    new_content = content[:insert_pos] + '\n${new_entry}' + content[insert_pos:]
+    new_content = content[:m.end()] + '\n' + entry + content[m.end():]
 else:
-    new_content = '${new_entry}' + content
+    new_content = entry + content
 with open('CHANGELOG.md', 'w') as f:
     f.write(new_content)
 PY
     else
-        printf "# Журнал изменений\n\n${new_entry}" > CHANGELOG.md
+        { printf "# Журнал изменений\n\n"; cat "$entry_file"; } > CHANGELOG.md
     fi
+    rm -f "$entry_file"
 
     # Обновить версию в metadata.yaml
     python3 - << PY
@@ -566,6 +649,15 @@ PY
 
     # Git
     echo ""
+    local dirty; dirty=$(git status --porcelain 2>/dev/null | grep -v "^??" || true)
+    if [[ -n "$dirty" ]]; then
+        warn "Есть незакоммиченные изменения:"
+        echo "$dirty" | sed 's/^/     /'
+        echo ""
+        warn "Они НЕ попадут в релизный коммит. Продолжить? (y/N)"
+        read -rp "  " _confirm
+        [[ "$_confirm" != "y" && "$_confirm" != "Y" ]] && { info "Отменено."; exit 0; }
+    fi
     info "Создаю коммит и тег..."
     git add metadata.yaml CHANGELOG.md
     git commit -m "release: v${new_version}"
@@ -600,13 +692,17 @@ cmd_sync() {
     local releases_json
     releases_json=$(curl -sf "$api_url" 2>/dev/null || echo "[]")
 
-    local latest_tag
-    latest_tag=$(python3 -c "
+    local latest_tag tmp_json; tmp_json=$(mktemp)
+    printf '%s' "$releases_json" > "$tmp_json"
+    latest_tag=$(python3 - "$tmp_json" 2>/dev/null << 'PY'
 import json, sys
-releases = json.loads('''${releases_json}''')
+with open(sys.argv[1]) as f:
+    releases = json.load(f)
 tags = [r['tag_name'] for r in releases if not r.get('prerelease')]
 print(tags[0] if tags else '')
-" 2>/dev/null || echo "")
+PY
+) || latest_tag=""
+    rm -f "$tmp_json"
 
     if [[ -z "$latest_tag" ]]; then
         warn "Не удалось получить информацию о релизах шаблона."
@@ -635,14 +731,15 @@ print(tags[0] if tags else '')
     fi
 
     # Найти файлы изменившиеся с current_tmpl по latest_tag
-    local changed_files
-    changed_files=$(python3 - << PY
-import yaml
-changes = yaml.safe_load("""${changes_yaml}""") or {}
-current = "${current_tmpl}"
-latest = "${latest_tag}"
+    local changed_files tmp_yaml; tmp_yaml=$(mktemp)
+    printf '%s' "$changes_yaml" > "$tmp_yaml"
+    changed_files=$(python3 - "$tmp_yaml" "$current_tmpl" "$latest_tag" << 'PY'
+import yaml, sys
+with open(sys.argv[1]) as f:
+    changes = yaml.safe_load(f) or {}
+current = sys.argv[2]
+latest  = sys.argv[3]
 
-# Собрать все версии между current и latest
 versions = sorted(changes.keys())
 collecting = False
 files = set()
@@ -660,6 +757,7 @@ for f in sorted(files):
     print(f)
 PY
 )
+    rm -f "$tmp_yaml"
 
     if [[ -z "$changed_files" ]]; then
         warn "Нет данных об изменениях. Просмотрите CHANGELOG шаблона вручную."
