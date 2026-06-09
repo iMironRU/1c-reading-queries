@@ -1,0 +1,39 @@
+title: "Чтение данных. Язык запросов 1С"
+subtitle: "Книга серии «Школа инженеров 1С»"
+slug: "chtenie-dannyh-zaprosy"
+author: "iMironRU"
+author_url: "https://github.com/iMironRU"
+language: ru
+license: "CC BY-NC-ND 4.0"
+version: "0.1.0"
+
+template_repo: "https://github.com/iMironRU/book-template"
+template_version: "v0.1.0"
+
+formats:
+  epub:     true
+  fb2:      true
+  pdf_a5:   true
+  pdf_a4:   false
+  html:     true
+  docx:     true
+  docx_a4:  false
+  site:     true
+
+release_filter: "review"
+nightly_filter: "all"
+
+artifacts: []
+
+site_url: "https://imironru.github.io/chtenie-dannyh-zaprosy"
+
+nightly:
+  enabled: true
+  branch: "main"
+
+pdf:
+  font_main: "PT Serif"
+  font_mono: "JetBrains Mono"
+  font_size: "11pt"
+  margin_a5: "top=20mm,right=15mm,bottom=20mm,left=20mm"
+  margin_a4: "top=25mm,right=20mm,bottom=25mm,left=25mm"

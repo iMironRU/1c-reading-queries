@@ -1,0 +1,122 @@
+name: Проверить обновления шаблона
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'   # 09:00 UTC каждый понедельник
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Установить зависимости
+        run: pip install pyyaml
+
+      - name: Получить текущую версию шаблона
+        id: current
+        run: |
+          python3 - << 'PY'
+          import yaml, os
+          with open('metadata.yaml') as f:
+              d = yaml.safe_load(f)
+          version = d.get('template_version', 'v0.1.0')
+          repo    = d.get('template_repo', 'https://github.com/iMironRU/book-template')
+          # Извлечь owner/repo из URL
+          path = repo.replace('https://github.com/', '')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"version={version}\n")
+              f.write(f"repo={path}\n")
+          PY
+
+      - name: Получить последний релиз шаблона
+        id: latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO="${{ steps.current.outputs.repo }}"
+          LATEST=$(gh release list --repo "$REPO" --limit 10 \
+            --json tagName,isPrerelease \
+            --jq '[.[] | select(.isPrerelease == false)] | .[0].tagName // ""' \
+            2>/dev/null || echo "")
+          echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+
+      - name: Сравнить версии
+        id: compare
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+          echo "Текущая версия шаблона:  $CURRENT"
+          echo "Последняя версия шаблона: $LATEST"
+          if [ -n "$LATEST" ] && [ "$CURRENT" != "$LATEST" ]; then
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Проверить — нет ли уже открытого Issue
+        id: existing
+        if: steps.compare.outputs.needs_update == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LATEST="${{ steps.latest.outputs.version }}"
+          COUNT=$(gh issue list --label template-update --state open \
+            --json title \
+            --jq "[.[] | select(.title | contains(\"$LATEST\"))] | length" \
+            2>/dev/null || echo "0")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Получить changelog шаблона
+        id: changelog
+        if: steps.compare.outputs.needs_update == 'true' && steps.existing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          REPO="${{ steps.current.outputs.repo }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+          NOTES=$(gh release view "$LATEST" --repo "$REPO" --json body --jq '.body' 2>/dev/null || echo "")
+          # Экранировать для multiline output
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Открыть GitHub Issue
+        if: steps.compare.outputs.needs_update == 'true' && steps.existing.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+          REPO="${{ steps.current.outputs.repo }}"
+
+          gh issue create \
+            --label "template-update" \
+            --title "Доступна новая версия шаблона: $LATEST" \
+            --body "$(cat << BODY
+          ## Обновление шаблона книги
+
+          Текущая версия: \`$CURRENT\`
+          Доступная версия: \`$LATEST\`
+
+          ### Что изменилось
+
+          ${{ steps.changelog.outputs.notes }}
+
+          ### Как обновить
+
+          \`\`\`bash
+          ./book.sh sync
+          \`\`\`
+
+          Скрипт покажет изменившиеся файлы и спросит, какие применить.
+
+          Репозиторий шаблона: https://github.com/$REPO
+          BODY
+          )"

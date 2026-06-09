@@ -1,0 +1,164 @@
+name: Ночная сборка
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 02:00 UTC каждую ночь
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check.outputs.should_build }}
+      site_enabled: ${{ steps.meta.outputs.site }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Проверить — были ли коммиты с последней ночной сборки
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Дата последнего Pre-release (ночной сборки)
+          LAST=$(gh release list --limit 50 --json tagName,publishedAt,isPrerelease \
+            --jq '[.[] | select(.isPrerelease and (.tagName | startswith("nightly")))] | .[0].publishedAt // ""' \
+            2>/dev/null || echo "")
+
+          if [ -z "$LAST" ]; then
+            echo "Нет предыдущих ночных сборок — строим"
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          else
+            COUNT=$(git log --since="$LAST" --oneline | wc -l)
+            echo "Коммитов с $LAST: $COUNT"
+            echo "should_build=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Проверить nightly.enabled в metadata.yaml
+        id: meta
+        if: steps.check.outputs.should_build == 'true'
+        run: |
+          pip install -q pyyaml
+          python3 - << 'PY'
+          import yaml, os
+          with open('metadata.yaml') as f:
+              d = yaml.safe_load(f)
+          def out(k, v):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f"{k}={v}\n")
+          nightly = d.get('nightly', {})
+          out('enabled', str(nightly.get('enabled', True)).lower())
+          out('filter',  d.get('nightly_filter', 'all'))
+          out('site',    str(d.get('formats', {}).get('site', False)).lower())
+          out('pdf',     str(d.get('formats', {}).get('pdf_a5', False) or d.get('formats', {}).get('pdf_a4', False)).lower())
+          out('version', d.get('version', '0.0.0'))
+          PY
+
+  build:
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      site_enabled: ${{ needs.check.outputs.site_enabled }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Зависимости Python
+        run: pip install pyyaml
+
+      - name: Читать metadata.yaml
+        id: meta
+        run: |
+          python3 - << 'PY'
+          import yaml, os
+          with open('metadata.yaml') as f:
+              d = yaml.safe_load(f)
+          fmt = d.get('formats', {})
+          def out(k, v):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f"{k}={v}\n")
+          out('version', d.get('version', '0.0.0'))
+          out('filter',  d.get('nightly_filter', 'all'))
+          out('site',    str(fmt.get('site', False)).lower())
+          out('pdf',     str(fmt.get('pdf_a5', False) or fmt.get('pdf_a4', False)).lower())
+          PY
+
+      - name: Установить Pandoc
+        run: |
+          wget -q https://github.com/jgm/pandoc/releases/download/3.5/pandoc-3.5-1-amd64.deb
+          sudo dpkg -i pandoc-3.5-1-amd64.deb
+
+      - name: Установить mdBook
+        if: steps.meta.outputs.site == 'true'
+        run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C /usr/local/bin/
+
+      - name: Установить TeX Live и шрифты (для PDF)
+        if: steps.meta.outputs.pdf == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended \
+            fonts-jetbrains-mono
+          mkdir -p ~/.local/share/fonts
+          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Regular.ttf \
+            -o ~/.local/share/fonts/PTSerif-Regular.ttf 2>/dev/null || true
+          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Bold.ttf \
+            -o ~/.local/share/fonts/PTSerif-Bold.ttf 2>/dev/null || true
+          fc-cache -f
+
+      - name: Собрать форматы
+        run: |
+          chmod +x book.sh
+          ./book.sh build ${{ steps.meta.outputs.filter }}
+
+      - name: Получить дату сборки
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+      - name: Обновить тег nightly
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -d nightly 2>/dev/null || true
+          git push origin :refs/tags/nightly 2>/dev/null || true
+          git tag nightly
+
+      - name: Создать/обновить Pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: "Ночная сборка (${{ steps.date.outputs.date }})"
+          prerelease: true
+          make_latest: false
+          files: dist/*
+          body: |
+            Автоматическая ночная сборка. Версия книги: **v${{ steps.meta.outputs.version }}**
+
+            Включает главы со статусом `draft` и `review` — это черновик, не финальная версия.
+
+      - name: Загрузить сайт для GitHub Pages
+        if: steps.meta.outputs.site == 'true' && hashFiles('book/**') != ''
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: book/
+
+  deploy-pages:
+    needs: build
+    if: needs.build.outputs.site_enabled == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Опубликовать GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

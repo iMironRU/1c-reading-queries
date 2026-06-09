@@ -1,0 +1,33 @@
+# Журнал изменений файлов шаблона между версиями.
+# Используется командой ./book.sh sync для предложения конкретных файлов к обновлению.
+#
+# Формат:
+#   vX.Y.Z:
+#     added:    [ список новых файлов ]
+#     changed:  [ список изменённых файлов ]
+#     removed:  [ список удалённых файлов ]
+
+v0.1.0:
+  added:
+    - "CLAUDE.md"
+    - "book.sh"
+    - "book.toml"
+    - "metadata.yaml"
+    - "CHANGELOG.md"
+    - "SUMMARY.md"
+    - "VERSION"
+    - "template-changes.yaml"
+    - "theme/book-extra.css"
+    - "spec/constitution.md"
+    - "spec/specification.md"
+    - "spec/decisions.md"
+    - "docs/style-guide.md"
+    - "docs/writing-workflow.md"
+    - ".claude/commands/book-write.md"
+    - ".claude/commands/book-analyze.md"
+    - ".claude/commands/book-plan.md"
+    - ".github/workflows/build-release.yml"
+    - ".github/workflows/build-nightly.yml"
+    - ".github/workflows/check-template.yml"
+  changed: []
+  removed: []

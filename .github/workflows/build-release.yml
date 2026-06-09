@@ -1,0 +1,142 @@
+name: Сборка релиза
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      site_enabled: ${{ steps.meta.outputs.site }}
+      version: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Зависимости Python
+        run: pip install pyyaml
+
+      - name: Читать metadata.yaml
+        id: meta
+        run: |
+          python3 - << 'PY'
+          import yaml, os
+          with open('metadata.yaml') as f:
+              d = yaml.safe_load(f)
+          fmt = d.get('formats', {})
+          def out(k, v):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f"{k}={v}\n")
+          out('version', d.get('version', '0.0.0'))
+          out('filter',  d.get('release_filter', 'all'))
+          out('site',    str(fmt.get('site', False)).lower())
+          out('pdf',     str(fmt.get('pdf_a5', False) or fmt.get('pdf_a4', False)).lower())
+          PY
+
+      - name: Установить Pandoc
+        run: |
+          wget -q https://github.com/jgm/pandoc/releases/download/3.5/pandoc-3.5-1-amd64.deb
+          sudo dpkg -i pandoc-3.5-1-amd64.deb
+
+      - name: Установить mdBook
+        if: steps.meta.outputs.site == 'true'
+        run: |
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz \
+            | tar xz -C /usr/local/bin/
+
+      - name: Установить TeX Live и шрифты (для PDF)
+        if: steps.meta.outputs.pdf == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended \
+            fonts-jetbrains-mono
+          # PT Serif — скачать из GitHub
+          mkdir -p ~/.local/share/fonts
+          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Regular.ttf \
+            -o ~/.local/share/fonts/PTSerif-Regular.ttf 2>/dev/null || true
+          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Bold.ttf \
+            -o ~/.local/share/fonts/PTSerif-Bold.ttf 2>/dev/null || true
+          curl -sSL https://github.com/google/fonts/raw/main/ofl/ptserif/PTSerif-Italic.ttf \
+            -o ~/.local/share/fonts/PTSerif-Italic.ttf 2>/dev/null || true
+          fc-cache -f
+
+      - name: Собрать форматы
+        run: |
+          chmod +x book.sh
+          ./book.sh build ${{ steps.meta.outputs.filter }}
+
+      - name: Упаковать артефакты из metadata.yaml
+        run: |
+          python3 - << 'PY'
+          import yaml, os, zipfile, shutil
+          with open('metadata.yaml') as f:
+              meta = yaml.safe_load(f)
+          os.makedirs('dist', exist_ok=True)
+          for art in (meta.get('artifacts') or []):
+              src  = art.get('source', '')
+              name = art.get('name', 'artifact')
+              typ  = art.get('type', 'file')
+              if not os.path.exists(src):
+                  print(f'Артефакт не найден: {src}')
+                  continue
+              if typ == 'zip':
+                  out = f'dist/{name}.zip'
+                  with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
+                      for root, _, files in os.walk(src):
+                          for file in files:
+                              path = os.path.join(root, file)
+                              z.write(path, os.path.relpath(path, src))
+                  print(f'Упакован: {out}')
+              elif typ == 'file':
+                  ext = os.path.splitext(src)[1]
+                  out = f'dist/{name}{ext}'
+                  shutil.copy2(src, out)
+                  print(f'Скопирован: {out}')
+          PY
+
+      - name: Извлечь последнюю запись из CHANGELOG
+        run: |
+          python3 - << 'PY'
+          import re
+          with open('CHANGELOG.md') as f:
+              content = f.read()
+          m = re.search(r'(## \[v[^\]]+\].*?)(?=\n## |\Z)', content, re.DOTALL)
+          notes = m.group(1).strip() if m else '_Нет записей в changelog._'
+          with open('RELEASE_NOTES.md', 'w') as f:
+              f.write(notes)
+          PY
+
+      - name: Создать GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          body_path: RELEASE_NOTES.md
+          prerelease: false
+          make_latest: true
+
+      - name: Загрузить сайт для GitHub Pages
+        if: steps.meta.outputs.site == 'true' && hashFiles('book/**') != ''
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: book/
+
+  deploy-pages:
+    needs: build
+    if: needs.build.outputs.site_enabled == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Опубликовать GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
