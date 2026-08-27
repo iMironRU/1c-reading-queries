@@ -13,7 +13,7 @@
 
 | Формат | Ссылка |
 |--------|--------|
-| Онлайн | [Открыть сайт](https://imironru.github.io/chtenie-dannyh-zaprosy) |
+| Онлайн | [Открыть сайт](https://imironru.github.io/1c-reading-queries) |
 | EPUB | [Releases](../../releases) |
 | PDF A5 | [Releases](../../releases) |
 | FB2 | [Releases](../../releases) |

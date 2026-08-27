@@ -1,6 +1,6 @@
 title: "Чтение данных. Язык запросов 1С"
 subtitle: "Четвёртая книга линии «Чтение 1С»"
-slug: "chtenie-dannyh-zaprosy"
+slug: "1c-reading-queries"
 author: "iMironRU"
 author_url: "https://github.com/iMironRU"
 language: ru
@@ -25,7 +25,7 @@ nightly_filter: "all"
 
 artifacts: []
 
-site_url: "https://imiron.ru/chtenie-dannyh-zaprosy/"
+site_url: "https://imiron.ru/1c-reading-queries/"
 
 nightly:
   enabled: true
