@@ -1,5 +1,5 @@
 title: "Чтение данных. Язык запросов 1С"
-subtitle: "Книга серии «Школа инженеров 1С»"
+subtitle: "Четвёртая книга линии «Чтение 1С»"
 slug: "chtenie-dannyh-zaprosy"
 author: "iMironRU"
 author_url: "https://github.com/iMironRU"
@@ -8,7 +8,7 @@ license: "CC BY-NC-ND 4.0"
 version: "0.1.0"
 
 template_repo: "https://github.com/iMironRU/book-template"
-template_version: "v0.1.0"
+template_version: "v0.2.1"
 
 formats:
   epub:     true
@@ -25,7 +25,7 @@ nightly_filter: "all"
 
 artifacts: []
 
-site_url: "https://imironru.github.io/chtenie-dannyh-zaprosy"
+site_url: "https://imiron.ru/chtenie-dannyh-zaprosy/"
 
 nightly:
   enabled: true

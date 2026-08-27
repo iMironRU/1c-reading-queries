@@ -17,7 +17,7 @@ set -euo pipefail
 
 # ─── Цвета ──────────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
-BLUE='\033[0;34m'; CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
+BLUE='\033[0;34m'; CYAN='\033[0;36m'; BOLD='\033[1m'; DIM='\033[2m'; RESET='\033[0m'
 
 info()    { echo -e "${CYAN}→${RESET} $*"; }
 success() { echo -e "${GREEN}✓${RESET} $*"; }
@@ -274,7 +274,7 @@ cmd_status() {
     header "Прогресс книги: $(read_meta 'title')"
     echo ""
 
-    local total=0 ready=0 review=0 draft=0
+    local total=0 ready=0 review=0 draft=0 todo=0
     local col_w=50
 
     printf "  %-${col_w}s %-8s\n" "Глава" "Статус"
@@ -284,18 +284,24 @@ cmd_status() {
     while IFS= read -r -d '' file; do
         local rel="${file#chapters/}"
 
-        # Извлечь статус из frontmatter
-        local status
-        status=$(python3 -c "
-import sys, re
-content = open('${file}').read()
+        # Статус и заголовок одним проходом (обрезка — по символам, не по байтам,
+        # иначе кириллица рвётся посреди символа)
+        local meta_line status title_line
+        meta_line=$(COL_W="$col_w" REL="$rel" python3 -c "
+import os, re, sys
+content = open(sys.argv[1], encoding='utf-8').read()
 m = re.search(r'^---.*?status:\s*(\w+).*?---', content, re.DOTALL)
-print(m.group(1) if m else 'unknown')
-" 2>/dev/null || echo "unknown")
-
-        # Заголовок первой # строки
-        local title_line
-        title_line=$(grep -m1 "^# " "$file" 2>/dev/null | sed 's/^# //' || echo "$rel")
+status = m.group(1) if m else 'unknown'
+# Заголовок: H1, иначе первый H2, иначе путь к файлу
+h = re.search(r'^#\s+(.+)$', content, re.M) or re.search(r'^##\s+(.+)$', content, re.M)
+title = h.group(1).strip() if h else os.environ['REL']
+w = int(os.environ['COL_W'])
+if len(title) > w:
+    title = title[:w - 1] + '…'
+print(status + '\t' + title.ljust(w))
+" "$file" 2>/dev/null || printf 'unknown\t%s' "$rel")
+        status="${meta_line%%$'\t'*}"
+        title_line="${meta_line#*$'\t'}"
 
         # Иконка статуса
         local icon color
@@ -303,11 +309,11 @@ print(m.group(1) if m else 'unknown')
             ready)   icon="✅"; color="$GREEN"; ((ready++)) ;;
             review)  icon="🔍"; color="$YELLOW"; ((review++)) ;;
             draft)   icon="✏️ "; color="$BLUE"; ((draft++)) ;;
+            todo)    icon="⬜"; color="$DIM"; ((todo++)) ;;
             *)       icon="❓"; color="$RED" ;;
         esac
 
-        printf "  ${color}%-${col_w}s${RESET} %s %s\n" \
-            "${title_line:0:$((col_w-1))}" "$icon" "$status"
+        printf "  ${color}%s${RESET} %s %s\n" "$title_line" "$icon" "$status"
         ((total++))
 
     done < <(find chapters -name "*.md" ! -name "_*.md" -print0 | sort -z)
@@ -317,7 +323,8 @@ print(m.group(1) if m else 'unknown')
     printf "  Итого: ${BOLD}%d${RESET} глав   " "$total"
     printf "${GREEN}%d ready${RESET}  " "$ready"
     printf "${YELLOW}%d review${RESET}  " "$review"
-    printf "${BLUE}%d draft${RESET}\n\n" "$draft"
+    printf "${BLUE}%d draft${RESET}  " "$draft"
+    printf "${DIM}%d todo${RESET}\n\n" "$todo"
 
     # Процент завершения
     if [[ $total -gt 0 ]]; then
@@ -354,6 +361,16 @@ cmd_build() {
 
     mkdir -p dist
 
+    # Штамп сборки: дата + git-ревизия. Доступен в шаблонах как $build-date$/$build-commit$.
+    local build_date build_commit
+    build_date=$(date -u '+%Y-%m-%d %H:%M UTC')
+    build_commit=$(git rev-parse --short HEAD 2>/dev/null || echo "—")
+    {
+        echo "build-date: \"${build_date}\""
+        echo "build-commit: \"${build_commit}\""
+        echo "build-filter: \"${filter}\""
+    } > build-info.yaml
+
     # Собрать список файлов по статусу
     local file_list=()
     while IFS= read -r -d '' file; do
@@ -384,6 +401,7 @@ print(m.group(1) if m else 'ready')
     # Общие флаги pandoc
     local pandoc_flags=(
         --metadata-file=metadata.yaml
+        --metadata-file=build-info.yaml
         --toc
         --toc-depth=3
         --standalone
@@ -394,6 +412,10 @@ print(m.group(1) if m else 'ready')
         pandoc_flags+=(--epub-cover-image=assets/img/cover.png)
 
     fmt() { read_meta "formats.$1"; }
+
+    # Печатный header для PDF (колонтитулы, разрывы глав) — если есть
+    local pdf_header=()
+    [[ -f assets/print/header.tex ]] && pdf_header=(-H assets/print/header.tex)
 
     # EPUB
     if [[ "$(fmt epub)" == "True" || "$(fmt epub)" == "true" ]]; then
@@ -429,7 +451,7 @@ print(m.group(1) if m else 'ready')
         if command -v xelatex &>/dev/null; then
             info "PDF A5..."
             local margin; margin=$(read_meta 'pdf.margin_a5')
-            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" \
+            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
                 -V papersize=a5 \
                 -V "geometry:${margin}" \
                 -V mainfont="$(read_meta 'pdf.font_main')" \
@@ -451,7 +473,7 @@ print(m.group(1) if m else 'ready')
         if command -v xelatex &>/dev/null; then
             info "PDF A4..."
             local margin_a4; margin_a4=$(read_meta 'pdf.margin_a4')
-            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" \
+            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
                 -V papersize=a4 \
                 -V "geometry:${margin_a4}" \
                 -V mainfont="$(read_meta 'pdf.font_main')" \
@@ -468,11 +490,11 @@ print(m.group(1) if m else 'ready')
         fi
     fi
 
-    # DOCX A4 (требует assets/reference-a4.docx для полей; без него — стандартный DOCX)
+    # DOCX A4 (стиль-референс assets/print/reference-a4.docx — поля под печать)
     if [[ "$(fmt docx_a4)" == "True" || "$(fmt docx_a4)" == "true" ]]; then
         info "DOCX A4..."
         local ref_arg=()
-        [[ -f assets/reference-a4.docx ]] && ref_arg=(--reference-doc=assets/reference-a4.docx)
+        [[ -f assets/print/reference-a4.docx ]] && ref_arg=(--reference-doc=assets/print/reference-a4.docx)
         pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${ref_arg[@]}" -o "${base}_a4.docx"
         success "→ ${base}_a4.docx"
     fi
@@ -482,8 +504,8 @@ print(m.group(1) if m else 'ready')
         if command -v mdbook &>/dev/null; then
             info "Сайт (mdBook)..."
             _generate_summary "$filter"
-            _inject_version "$version"
-            mdbook build
+            _inject_version "$version" "$build_commit"
+            _build_site
             success "→ book/ (mdBook site)"
         else
             warn "mdbook не найден. Установите: https://rust-lang.github.io/mdBook/guide/installation.html"
@@ -492,6 +514,36 @@ print(m.group(1) if m else 'ready')
 
     echo ""
     success "Сборка завершена. Файлы в dist/"
+}
+
+_build_site() {
+    # mdBook копирует в каталог сборки ВСЁ содержимое src. При src = "." это
+    # весь репозиторий: .git, .env, dist/, spec/ — десятки мегабайт мусора и
+    # ключи API в выводе, который уходит на Pages. Поэтому собираем из
+    # временного каталога, куда кладём только то, что нужно сайту.
+    local stage=".site-src"
+    rm -rf "$stage" book
+    mkdir -p "$stage"
+
+    cp SUMMARY.md "$stage"/ 2>/dev/null || true
+    cp README.md  "$stage"/ 2>/dev/null || true
+    cp -R chapters "$stage"/ 2>/dev/null || true
+    cp -R theme    "$stage"/ 2>/dev/null || true
+    [[ -d assets ]] && cp -R assets "$stage"/
+
+    # book.toml для стенда: тот же, но src — стенд, а вывод — в book/ репозитория
+    python3 - "$stage" <<'PYSITE'
+import re, sys
+stage = sys.argv[1]
+cfg = open("book.toml", encoding="utf-8").read()
+cfg = re.sub(r'^src\s*=.*$',        'src = "."',            cfg, flags=re.M)
+cfg = re.sub(r'^build-dir\s*=.*$',  'build-dir = "../book"', cfg, flags=re.M)
+open(f"{stage}/book.toml", "w", encoding="utf-8").write(cfg)
+PYSITE
+
+    ( cd "$stage" && mdbook build )
+    rm -rf "$stage"
+    rm -f book/book.toml   # служебный конфиг стенда в выводе не нужен
 }
 
 _generate_summary() {
@@ -521,21 +573,35 @@ print(m.group(1) if m else 'ready')
 
             local rel="${file}"
             local module; module=$(echo "$file" | cut -d/ -f2)
-            local title_line; title_line=$(grep -m1 "^# " "$file" 2>/dev/null | sed 's/^# //')
-            [[ -z "$title_line" ]] && title_line=$(basename "${file%.md}" | sed 's/^[0-9-]*_*//')
+            local module_title
+
+            # Заголовок раздела — название модуля из H1 первого файла модуля
+            # ("# Модуль 1. ..."), иначе из слага папки
+            module_title=$( { grep -h -m1 "^# " "chapters/$module"/*.md 2>/dev/null || true; } | sed -n '1s/^# //p' )
+            [[ -z "$module_title" ]] && module_title=$(echo "$module" | sed 's/^[0-9]*_//' | tr '_-' '  ')
 
             if [[ "$module" != "$prev_module" ]]; then
-                local module_title; module_title=$(echo "$module" | sed 's/^[0-9]*_//' | tr '_' ' ')
                 [[ -n "$prev_module" ]] && echo ""
                 echo "## $module_title"
                 echo ""
                 prev_module="$module"
             fi
 
+            # Заголовок ссылки: H1, иначе первый H2 (по конвенции H1 только у
+            # первого файла модуля, остальные начинаются с "## § N.M ..."),
+            # иначе имя файла. Если H1 совпал с названием модуля — оно уже стоит
+            # заголовком раздела, берём заголовок параграфа.
+            local title_line
+            title_line=$( { grep -m1 "^# "  "$file" 2>/dev/null || true; } | sed -n '1s/^# //p' )
+            [[ -z "$title_line" || "$title_line" == "$module_title" ]] && \
+                title_line=$( { grep -m1 "^## " "$file" 2>/dev/null || true; } | sed -n '1s/^## //p' )
+            [[ -z "$title_line" ]] && title_line=$(basename "${file%.md}" | sed 's/^[0-9-]*_*//')
+
             # Добавить иконку статуса
             local label="$title_line"
             [[ "$status" == "draft" ]] && label="✏️ $title_line (черновик)"
             [[ "$status" == "review" ]] && label="🔍 $title_line"
+            [[ "$status" == "todo" ]] && label="⬜ $title_line (скелет)"
 
             echo "- [${label}](${rel})"
         done < <(find chapters -name "*.md" ! -name "_*.md" -print0 | sort -z)
@@ -544,6 +610,9 @@ print(m.group(1) if m else 'ready')
 
 _inject_version() {
     local version="$1"
+    local commit="${2:-}"
+    local rev_suffix=""
+    [[ -n "$commit" && "$commit" != "—" ]] && rev_suffix=" · rev ${commit}"
     # Создать файл с версией, который mdBook включает в footer
     mkdir -p theme
     cat > theme/version.js << JS
@@ -551,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var footer = document.querySelector('.nav-wrapper') || document.body;
     var versionBadge = document.createElement('div');
     versionBadge.style.cssText = 'text-align:center;padding:8px;font-size:0.8em;opacity:0.6;';
-    versionBadge.innerHTML = 'Версия <strong>v${version}</strong> · <a href="../CHANGELOG.md">Что изменилось</a>';
+    versionBadge.innerHTML = 'Версия <strong>v${version}</strong>${rev_suffix} · <a href="../CHANGELOG.md">Что изменилось</a>';
     document.body.appendChild(versionBadge);
 });
 JS
@@ -816,6 +885,18 @@ PY
     fi
 }
 
+# ─── LINT ────────────────────────────────────────────────────────────────────
+cmd_lint() {
+    local args=("$@")
+    if [[ ! -f scripts/style-lint.py ]]; then
+        error "scripts/style-lint.py не найден. Запустите: ./book.sh sync"
+        exit 1
+    fi
+    header "Проверка стиля по канону серии"
+    echo ""
+    python3 scripts/style-lint.py "${args[@]}"
+}
+
 # ─── HELP ────────────────────────────────────────────────────────────────────
 show_help() {
     echo ""
@@ -825,6 +906,7 @@ show_help() {
     echo -e "    ${CYAN}init${RESET}              Инициализировать книгу (заполнить metadata.yaml)"
     echo -e "    ${CYAN}status${RESET}            Показать прогресс по главам"
     echo -e "    ${CYAN}build [фильтр]${RESET}    Собрать форматы (ready | review | all)"
+    echo -e "    ${CYAN}lint [пути]${RESET}       Проверить стиль по канону (docs/style-guide.md)"
     echo -e "    ${CYAN}release${RESET}           Выпустить версию (changelog + git tag)"
     echo -e "    ${CYAN}sync${RESET}              Проверить и применить обновления шаблона"
     echo -e "    ${CYAN}help${RESET}              Эта справка"
@@ -845,8 +927,9 @@ show_menu() {
     echo "   1. Инициализировать книгу"
     echo "   2. Прогресс по главам"
     echo "   3. Собрать форматы локально"
-    echo "   4. Выпустить версию"
-    echo "   5. Проверить обновления шаблона"
+    echo "   4. Проверить стиль"
+    echo "   5. Выпустить версию"
+    echo "   6. Проверить обновления шаблона"
     echo "   0. Выход"
     echo ""
     read -rp "  Выбор: " choice
@@ -854,8 +937,9 @@ show_menu() {
         1) cmd_init ;;
         2) cmd_status ;;
         3) read -rp "  Фильтр (ready/review/all) [all]: " f; cmd_build "${f:-all}" ;;
-        4) cmd_release ;;
-        5) cmd_sync ;;
+        4) cmd_lint ;;
+        5) cmd_release ;;
+        6) cmd_sync ;;
         0) exit 0 ;;
         *) warn "Неверный выбор" ;;
     esac
@@ -869,6 +953,7 @@ case "$COMMAND" in
     init)    cmd_init "$@" ;;
     status)  cmd_status ;;
     build)   cmd_build "${1:-all}" ;;
+    lint)    cmd_lint "$@" ;;
     release) cmd_release ;;
     sync)    cmd_sync ;;
     help)    show_help ;;

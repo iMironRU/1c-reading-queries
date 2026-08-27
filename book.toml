@@ -1,6 +1,6 @@
 [book]
-title = "Чтение данных. Язык запросов 1С"
-authors = ["iMironRU"]
+title = "Название книги"        # обновляется через ./book.sh init
+authors = ["Автор"]
 language = "ru"
 src = "."
 

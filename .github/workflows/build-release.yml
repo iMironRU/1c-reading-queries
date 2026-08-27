@@ -41,6 +41,14 @@ jobs:
           out('pdf',     str(fmt.get('pdf_a5', False) or fmt.get('pdf_a4', False)).lower())
           PY
 
+      - name: Проверить стиль по канону серии
+        run: |
+          if [ -f scripts/style-lint.py ]; then
+            python3 scripts/style-lint.py --format github
+          else
+            echo "scripts/style-lint.py отсутствует — проверка пропущена"
+          fi
+
       - name: Установить Pandoc
         run: |
           wget -q https://github.com/jgm/pandoc/releases/download/3.5/pandoc-3.5-1-amd64.deb
@@ -57,7 +65,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended lmodern \
+            texlive-xetex texlive-lang-cyrillic texlive-fonts-recommended texlive-latex-extra lmodern \
             fonts-jetbrains-mono fonts-paratype
 
       - name: Собрать форматы

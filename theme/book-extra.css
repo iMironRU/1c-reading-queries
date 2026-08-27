@@ -17,3 +17,64 @@
   margin-top: 2rem;
   text-align: center;
 }
+
+/* ─── Callout-блоки (выноски) ────────────────────────────────────────────── */
+/* Использование в markdown:
+   > [!NOTE] текст      → синяя выноска
+   > [!TIP] текст       → зелёная
+   > [!WARNING] текст   → жёлтая
+   Либо вручную: <div class="callout callout-note">…</div>            */
+.callout {
+  border-left: 4px solid #ccc;
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+  border-radius: 0 4px 4px 0;
+  background: rgba(0, 0, 0, 0.03);
+}
+.callout-note    { border-left-color: #4a90d9; background: rgba(74, 144, 217, 0.08); }
+.callout-tip     { border-left-color: #3fb950; background: rgba(63, 185, 80, 0.08); }
+.callout-warning { border-left-color: #ffc107; background: rgba(255, 193, 7, 0.10); }
+.callout-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+/* ─── Нумерация глав в основном тексте (H1 = § параграфа) ─────────────────── */
+/* mdBook сам нумерует сайдбар; здесь — мягкая визуальная иерархия заголовков */
+.content h1 { font-size: 1.9rem; margin-top: 0; }
+.content h2 { font-size: 1.45rem; margin-top: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 0.2rem; }
+.content h3 { font-size: 1.18rem; margin-top: 1.5rem; }
+
+/* Длинный код не должен ломать вёрстку на узких экранах */
+.content pre > code { white-space: pre; overflow-x: auto; }
+
+/* ─── Печать страницы сайта (Ctrl+P) ─────────────────────────────────────── */
+@media print {
+  /* Убрать навигацию, поиск, кнопки — оставить только текст */
+  .sidebar,
+  .nav-chapters,
+  .mobile-nav-chapters,
+  #menu-bar,
+  .nav-wide-wrapper,
+  .nav-wrapper,
+  #sidebar-toggle-anchor { display: none !important; }
+
+  .page-wrapper, .content, .content main { margin: 0 !important; max-width: 100% !important; }
+
+  /* Каждый § параграф — с новой страницы */
+  .content h1 { page-break-before: always; }
+  .content h1:first-of-type { page-break-before: avoid; }
+
+  /* Не разрывать выноски и таблицы между страницами */
+  .callout, table, pre, figure { page-break-inside: avoid; }
+
+  /* Не отрывать заголовок от текста */
+  h1, h2, h3 { page-break-after: avoid; }
+
+  /* Чёрный текст, разворачивать ссылки */
+  body { color: #000; font-size: 11pt; }
+  a:after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; }
+  a[href^="#"]:after,
+  a[href^="/"]:after { content: ""; }
+}
