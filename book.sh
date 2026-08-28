@@ -547,6 +547,14 @@ PYSITE
 }
 
 _generate_summary() {
+    local module_titles_raw
+    module_titles_raw=$(python3 -c "
+import yaml
+d = yaml.safe_load(open('metadata.yaml')) or {}
+for k, v in (d.get('modules') or {}).items():
+    print(k + chr(9) + str(v))
+" 2>/dev/null || true)
+
     local filter="${1:-all}"
     info "Генерация SUMMARY.md..."
     {
@@ -575,9 +583,11 @@ print(m.group(1) if m else 'ready')
             local module; module=$(echo "$file" | cut -d/ -f2)
             local module_title
 
-            # Заголовок раздела — название модуля из H1 первого файла модуля
-            # ("# Модуль 1. ..."), иначе из слага папки
-            module_title=$( { grep -h -m1 "^# " "chapters/$module"/*.md 2>/dev/null || true; } | sed -n '1s/^# //p' )
+            # Заголовок раздела — из metadata.yaml (modules.<слаг>); иначе H1 вида
+            # "# Модуль N. ..." внутри модуля; иначе слаг папки. Брать первый
+            # попавшийся H1 нельзя: по канону H1 каждого файла — это сам параграф.
+            module_title=$(printf '%s\n' "$module_titles_raw" | awk -F'\t' -v k="$module" '$1==k{print $2; exit}')
+            [[ -z "$module_title" ]] && module_title=$( { grep -h -m1 -E "^# (Модуль|Часть|Фаза|Раздел) " "chapters/$module"/*.md 2>/dev/null || true; } | sed -n '1s/^# //p' )
             [[ -z "$module_title" ]] && module_title=$(echo "$module" | sed 's/^[0-9]*_//' | tr '_-' '  ')
 
             if [[ "$module" != "$prev_module" ]]; then
@@ -593,8 +603,11 @@ print(m.group(1) if m else 'ready')
             # заголовком раздела, берём заголовок параграфа.
             local title_line
             title_line=$( { grep -m1 "^# "  "$file" 2>/dev/null || true; } | sed -n '1s/^# //p' )
-            [[ -z "$title_line" || "$title_line" == "$module_title" ]] && \
-                title_line=$( { grep -m1 "^## " "$file" 2>/dev/null || true; } | sed -n '1s/^## //p' )
+            if [[ -z "$title_line" || "$title_line" == "$module_title" ]]; then
+                local h2_line
+                h2_line=$( { grep -m1 "^## " "$file" 2>/dev/null || true; } | sed -n '1s/^## //p' )
+                [[ -n "$h2_line" ]] && title_line="$h2_line"
+            fi
             [[ -z "$title_line" ]] && title_line=$(basename "${file%.md}" | sed 's/^[0-9-]*_*//')
 
             # Добавить иконку статуса
@@ -894,7 +907,8 @@ cmd_lint() {
     fi
     header "Проверка стиля по канону серии"
     echo ""
-    python3 scripts/style-lint.py "${args[@]}"
+    # bash 3.2 + set -u: развёртывание пустого массива — ошибка, отсюда ${a[@]+"${a[@]}"}
+    python3 scripts/style-lint.py ${args[@]+"${args[@]}"}
 }
 
 # ─── HELP ────────────────────────────────────────────────────────────────────
@@ -954,6 +968,7 @@ case "$COMMAND" in
     status)  cmd_status ;;
     build)   cmd_build "${1:-all}" ;;
     lint)    cmd_lint "$@" ;;
+    summary) check_metadata; _generate_summary "${1:-all}"; success "→ SUMMARY.md" ;;
     release) cmd_release ;;
     sync)    cmd_sync ;;
     help)    show_help ;;

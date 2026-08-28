@@ -37,3 +37,19 @@ pdf:
   font_size: "11pt"
   margin_a5: "top=20mm,right=15mm,bottom=20mm,left=20mm"
   margin_a4: "top=25mm,right=20mm,bottom=25mm,left=25mm"
+
+# ─────────────────────────────────────────────
+#  НАЗВАНИЯ ГЛАВ (заголовки разделов в SUMMARY)
+# ─────────────────────────────────────────────
+modules:
+  00_vstuplenie: "Глава 0. Вступление"
+  01_podgotovka: "Глава 1. Подготовка"
+  02_zapros_kak_predlozhenie: "Глава 2. Запрос как предложение"
+  03_svyazi: "Глава 3. Связи"
+  04_svyortka: "Глава 4. Свёртка"
+  05_registry_i_virtualnye_tablicy: "Глава 5. Регистры и виртуальные таблицы"
+  06_sborka_slozhnogo_voprosa: "Глава 6. Сборка сложного вопроса"
+  07_proektirovanie_pod_bystruyu_vyborku: "Глава 7. Проектирование под быструю выборку"
+  08_obrabotka_rezultata: "Глава 8. Обработка результата"
+  09_kak_vypolnyaetsya_zapros: "Глава 9. Как выполняется запрос"
+  10_porog_k_skd: "Глава 10. Порог к СКД"
