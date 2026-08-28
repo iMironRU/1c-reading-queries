@@ -362,6 +362,7 @@ cmd_build() {
         fi
     fi
 
+    rm -rf dist   # иначе копятся файлы от прежних имён книги
     mkdir -p dist
 
     # Штамп сборки: дата + git-ревизия. Доступен в шаблонах как $build-date$/$build-commit$.
@@ -408,6 +409,9 @@ print(m.group(1) if m else 'ready')
         --toc
         --toc-depth=3
         --standalone
+        # Служебные комментарии (полезная нагрузка для песочницы) читателю
+        # не нужны: в вёрстке они невидимы, но в EPUB уезжают мёртвым грузом.
+        --strip-comments
     )
 
     # Cover image
@@ -430,7 +434,7 @@ print(m.group(1) if m else 'ready')
     # FB2
     if [[ "$(fmt fb2)" == "True" || "$(fmt fb2)" == "true" ]]; then
         info "FB2..."
-        pandoc "${file_list[@]}" --metadata-file=metadata.yaml --toc -o "${base}.fb2"
+        pandoc "${file_list[@]}" --metadata-file=metadata.yaml --strip-comments --toc -o "${base}.fb2"
         success "→ ${base}.fb2"
     fi
 
