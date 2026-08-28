@@ -78,3 +78,28 @@
   a[href^="#"]:after,
   a[href^="/"]:after { content: ""; }
 }
+
+/* ─── Плашка «книга не дописана» ─────────────────────────────────────── */
+
+.book-status {
+    margin: 0 0 1.6em;
+    padding: 0.7em 1em;
+    border-left: 3px solid;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.92em;
+    line-height: 1.5;
+}
+
+.book-status--wip {
+    border-color: #d19a20;
+    background: rgba(209, 154, 32, 0.10);
+}
+
+.book-status--stub {
+    border-color: #9a9a9a;
+    background: rgba(154, 154, 154, 0.12);
+}
+
+@media print {
+    .book-status { display: none; }
+}

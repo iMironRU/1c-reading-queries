@@ -508,6 +508,7 @@ print(m.group(1) if m else 'ready')
             info "Сайт (mdBook)..."
             _generate_summary "$filter"
             _inject_version "$version" "$build_commit"
+            _inject_status_banner
             _build_site
             success "→ book/ (mdBook site)"
         else
@@ -517,6 +518,56 @@ print(m.group(1) if m else 'ready')
 
     echo ""
     success "Сборка завершена. Файлы в dist/"
+}
+
+_inject_status_banner() {
+    # Плашка «книга не дописана» собирается из фактических статусов параграфов,
+    # а не ведётся руками: иначе она разойдётся с содержимым книги в первый же
+    # день. Три состояния: заготовка (везде todo), в работе (есть todo/draft),
+    # и без плашки (всё review/ready).
+    mkdir -p theme
+    python3 - <<'PYBANNER'
+import glob, os, re, json, collections
+
+c = collections.Counter()
+for f in glob.glob("chapters/*/*.md"):
+    if os.path.basename(f).startswith("_"):
+        continue
+    m = re.search(r"^status:\s*(\w+)", open(f, encoding="utf-8").read(), re.M)
+    c[m.group(1) if m else "нет"] += 1
+
+total = sum(c.values())
+done = c["ready"] + c["review"]
+raw = c["todo"] + c["draft"]
+
+if total and c["todo"] == total:
+    kind, text = "stub", (
+        "Это пока заготовка. Структура книги есть, текст ещё не написан — "
+        "смотреть имеет смысл только оглавление."
+    )
+elif total and raw:
+    kind, text = "wip", (
+        f"Книга пишется: {done} из {total} параграфов прошли вычитку. "
+        "Черновики открыты нарочно — их можно читать, но они ещё изменятся."
+    )
+else:
+    kind, text = "", ""
+
+with open("theme/status.js", "w", encoding="utf-8") as f:
+    if not kind:
+        f.write("/* книга дописана — плашка не нужна */\n")
+    else:
+        f.write(
+            "document.addEventListener('DOMContentLoaded', function () {\n"
+            "    var host = document.querySelector('main');\n"
+            "    if (!host) return;\n"
+            "    var b = document.createElement('div');\n"
+            "    b.className = 'book-status book-status--%s';\n"
+            "    b.textContent = %s;\n"
+            "    host.insertBefore(b, host.firstChild);\n"
+            "});\n" % (kind, json.dumps(text, ensure_ascii=False))
+        )
+PYBANNER
 }
 
 _build_site() {
@@ -533,6 +584,19 @@ _build_site() {
     cp -R chapters "$stage"/ 2>/dev/null || true
     cp -R theme    "$stage"/ 2>/dev/null || true
     [[ -d assets ]] && cp -R assets "$stage"/
+
+    # mdBook не понимает YAML-фронтматтер и печатает его на странице: блок
+    # «--- status: draft ---» разбирается как заголовок, и на каждой странице
+    # сайта висело «status: review». Снимаем его в копии для стенда.
+    python3 - "$stage" <<'PYFM'
+import glob, re, sys
+stage = sys.argv[1]
+for f in glob.glob(f"{stage}/chapters/*/*.md") + glob.glob(f"{stage}/*.md"):
+    t = open(f, encoding="utf-8").read()
+    s = re.sub(r"\A---\r?\n.*?\r?\n---\r?\n\s*", "", t, count=1, flags=re.S)
+    if s != t:
+        open(f, "w", encoding="utf-8").write(s)
+PYFM
 
     # book.toml для стенда: тот же, но src — стенд, а вывод — в book/ репозитория
     python3 - "$stage" <<'PYSITE'

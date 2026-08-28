@@ -18,7 +18,7 @@ formats:
   html:     true
   docx:     true
   docx_a4:  false
-  site:     false    # книга ещё не дописана — сайт не публикуем
+  site:     true     # Сайт на GitHub Pages (mdBook)
 
 release_filter: "review"
 nightly_filter: "all"
