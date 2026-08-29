@@ -128,12 +128,26 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
 
       - name: Обновить тег nightly
+        # Тег ДВИГАЕМ, а не удаляем и создаём заново. Удаление тега с сервера
+        # оставляет релиз без тега, а релиз без тега GitHub превращает в
+        # черновик — и его ассеты перестают отдаваться по публичной ссылке.
+        # Следующая сборка не находит опубликованного релиза, заводит новый,
+        # и черновики копятся по одному за запуск.
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -d nightly 2>/dev/null || true
-          git push origin :refs/tags/nightly 2>/dev/null || true
-          git tag nightly
+          git tag -f nightly
+          git push -f origin refs/tags/nightly
+
+      - name: Собрать задачи Judge (tasks.json)
+        run: |
+          if [ -d tasks ]; then
+            python3 -m pip install --quiet jsonschema || true
+            mkdir -p dist
+            python3 scripts/build-tasks.py --out dist/tasks.json
+          else
+            echo "Папки tasks/ нет — книга не публикует задачи."
+          fi
 
       - name: Создать/обновить Pre-release
         uses: softprops/action-gh-release@v3
@@ -141,12 +155,32 @@ jobs:
           tag_name: nightly
           name: "Ночная сборка (${{ steps.date.outputs.date }})"
           prerelease: true
+          draft: false          # явно: черновик ассеты по ссылке не отдаёт
           make_latest: false
           files: dist/*
           body: |
             Автоматическая ночная сборка. Версия книги: **v${{ steps.meta.outputs.version }}**
 
             Включает главы со статусом `draft` и `review` — это черновик, не финальная версия.
+
+      - name: Проверить, что ассет действительно скачивается
+        # Сборка может отчитаться об успехе, а ссылка отдавать 404 — так и было,
+        # когда релиз оказывался черновиком. Проверяем с той стороны, с которой
+        # файл будет забирать читатель.
+        run: |
+          set -e
+          NAME=$(ls dist/*.epub 2>/dev/null | head -1 | xargs -r basename)
+          if [ -z "$NAME" ]; then echo "EPUB не собирался — проверять нечего"; exit 0; fi
+          URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/nightly/${NAME}"
+          for i in 1 2 3 4 5; do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 "$URL")
+            [ "$CODE" = "200" ] && echo "✓ $NAME скачивается по ссылке" && exit 0
+            echo "попытка $i: HTTP $CODE, жду"
+            sleep 10
+          done
+          echo "::error::Ассет $NAME не отдаётся по публичной ссылке (HTTP $CODE)."
+          echo "::error::Обычная причина — релиз остался черновиком: у черновика ассеты не публикуются."
+          exit 1
 
       - name: Загрузить сайт для GitHub Pages
         if: steps.meta.outputs.site == 'true' && hashFiles('book/**') != ''

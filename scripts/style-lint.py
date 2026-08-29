@@ -42,7 +42,8 @@ DEFAULT_SEVERITY = {
     "emoji": "warning",
     "heavy": "warning",
     "wide": "warning",
-    "kitchen": "error",     # разметки больше четверти объёма
+    "kitchen": "error",
+    "agree": "warning",     # разметки больше четверти объёма
 }
 
 
@@ -292,6 +293,16 @@ def check_file(path, cfg):
                 findings.append((level, path, line, col, "kitchen",
                                  f"«{m.group(0).strip()[:26]}» — {why}"))
 
+    # Согласование рода после массовых замен. Проверяем по склеенному тексту:
+    # в исходнике фраза часто разорвана переносом строки, и построчный поиск её
+    # не видит — именно так «один общий устройство» дожил до готового EPUB.
+    if sev("agree") != "off":
+        flat = re.sub(r"\s+", " ", text)
+        AGREE = r"(?<![А-Яа-яЁё])(тот|этот|один|общий|такой|весь|наш|каждый|любой)\s+устройств\w*"
+        for m in re.finditer(AGREE, flat, flags=re.I):
+            findings.append((sev("agree"), path, 1, 1, "agree",
+                             f"«{m.group(0)}» — род не согласован: «устройство» среднего рода"))
+
     # Ширина артефакта. На телефоне в моноширинный блок влезает около 46
     # знаков. Если строка длиннее, читалка её переносит — и правая колонка
     # уезжает под левую. Для двух колонок это смерть: пары рассыпаются.
@@ -303,7 +314,14 @@ def check_file(path, cfg):
                 continue
             line = raw[:m.start()].count("\n") + 1
             rows = [l for l in block.split("\n") if l.strip()]
-            two_col = sum(1 for l in rows if re.search(r"\S {3,}\S", l)) >= max(2, len(rows) // 2)
+            lang = m.group(1).strip()
+            # У кода отступы и продолжения строк выглядят как колонки, но ими не
+            # являются: с ним поможет только перенос, а не таблица. И у схемы
+            # с ветвлением колонок тоже нет.
+            is_code = lang.startswith("bsl")
+            is_scheme = any(ch in block for ch in "│┌└├┤┬┴┼┐┘↓↑→←⇒▓░")
+            two_col = (not is_code and not is_scheme
+                       and sum(1 for l in rows if re.search(r"\S {3,}\S", l)) >= max(2, len(rows) // 2))
             if two_col:
                 findings.append((sev("wide"), path, line, 1, "wide",
                                  f"две колонки шириной {widest} знаков — на телефоне "
