@@ -40,7 +40,8 @@ DEFAULT_SEVERITY = {
     "opener": "error",      # шаблонные зачины
     "filler": "warning",    # пустые усиления — сильно зависят от контекста
     "emoji": "warning",
-    "heavy": "warning",     # разметки больше четверти объёма
+    "heavy": "warning",
+    "wide": "warning",     # разметки больше четверти объёма
 }
 
 
@@ -244,14 +245,39 @@ def check_file(path, cfg):
     if sev("telling") != "off":
         body = re.split(r"^##\s*(?:Контрольные вопросы|Упражнения)", raw, flags=re.M)[0]
         arte = len(re.findall(r"```", body)) // 2
-        arte += len(re.findall(r"^\s*\|.*\|\s*$", body, re.M)) and 1
-        prose_words = len(re.sub(r"```.*?```", " ", body, flags=re.S).split())
+        # Таблица — такой же показ, как блок кода. Считаем блоками, а не
+        # строками: раньше стояло «and 1», и десять таблиц шли за одну.
+        arte += len(re.findall(r"(?:^\s*\|.*\|\s*$\n)+", body, re.M))
+        prose = re.sub(r"```.*?```", " ", body, flags=re.S)
+        prose = re.sub(r"^\s*\|.*\|\s*$", " ", prose, flags=re.M)
+        prose_words = len(prose.split())
         if prose_words > 400:
             per = prose_words // max(arte, 1)
             if per > 250:
                 findings.append((sev("telling"), path, 1, 1, "telling",
                                  f"один показ на {per} слов прозы — канон просит "
                                  f"около 130: параграф рассказывает там, где мог бы показать"))
+
+    # Ширина артефакта. На телефоне в моноширинный блок влезает около 46
+    # знаков. Если строка длиннее, читалка её переносит — и правая колонка
+    # уезжает под левую. Для двух колонок это смерть: пары рассыпаются.
+    if sev("wide") != "off":
+        for m in re.finditer(r"^```([^\n]*)\n(.*?)^```", raw, flags=re.S | re.M):
+            block = m.group(2)
+            widest = max((len(l) for l in block.split("\n")), default=0)
+            if widest <= 46:
+                continue
+            line = raw[:m.start()].count("\n") + 1
+            rows = [l for l in block.split("\n") if l.strip()]
+            two_col = sum(1 for l in rows if re.search(r"\S {3,}\S", l)) >= max(2, len(rows) // 2)
+            if two_col:
+                findings.append((sev("wide"), path, line, 1, "wide",
+                                 f"две колонки шириной {widest} знаков — на телефоне "
+                                 f"правая уедет под левую; нужна настоящая таблица"))
+            else:
+                findings.append((sev("wide"), path, line, 1, "wide",
+                                 f"артефакт шириной {widest} знаков — на телефоне "
+                                 f"строка переносится (влезает около 46)"))
 
     for code, (phrases, label) in PHRASES.items():
         if sev(code) == "off":

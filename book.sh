@@ -427,7 +427,9 @@ print(m.group(1) if m else 'ready')
     # EPUB
     if [[ "$(fmt epub)" == "True" || "$(fmt epub)" == "true" ]]; then
         info "EPUB..."
-        pandoc "${file_list[@]}" "${pandoc_flags[@]}" -o "${base}.epub"
+        local epub_css=()
+        [[ -f assets/print/epub.css ]] && epub_css=(--css=assets/print/epub.css)
+        pandoc "${file_list[@]}" "${pandoc_flags[@]}" ${epub_css[@]+"${epub_css[@]}"} -o "${base}.epub"
         success "→ ${base}.epub"
     fi
 
