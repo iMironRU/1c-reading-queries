@@ -685,10 +685,11 @@ print(m.group(1) if m else 'ready')
             [[ -z "$module_title" ]] && module_title=$( { grep -h -m1 -E "^# (Модуль|Часть|Фаза|Раздел) " "chapters/$module"/*.md 2>/dev/null || true; } | sed -n '1s/^# //p' )
             [[ -z "$module_title" ]] && module_title=$(echo "$module" | sed 's/^[0-9]*_//' | tr '_-' '  ')
 
+            # Заголовок главы — узел дерева без ссылки (mdBook: draft chapter).
+            # Параграфы вкладываются под него отступом, боковая панель их сворачивает.
             if [[ "$module" != "$prev_module" ]]; then
                 [[ -n "$prev_module" ]] && echo ""
-                echo "## $module_title"
-                echo ""
+                echo "- [${module_title}]()"
                 prev_module="$module"
             fi
 
@@ -705,13 +706,14 @@ print(m.group(1) if m else 'ready')
             fi
             [[ -z "$title_line" ]] && title_line=$(basename "${file%.md}" | sed 's/^[0-9-]*_*//')
 
-            # Добавить иконку статуса
+            # Пометка статуса — только там, где текст ещё не готов. Для review
+            # значка нет: когда в нём вся книга, полсотни одинаковых иконок
+            # не сообщают ничего, а список загромождают.
             local label="$title_line"
-            [[ "$status" == "draft" ]] && label="✏️ $title_line (черновик)"
-            [[ "$status" == "review" ]] && label="🔍 $title_line"
-            [[ "$status" == "todo" ]] && label="⬜ $title_line (скелет)"
+            [[ "$status" == "draft" ]] && label="✏️ $title_line"
+            [[ "$status" == "todo" ]] && label="⬜ $title_line"
 
-            echo "- [${label}](${rel})"
+            echo "  - [${label}](${rel})"
         done < <(find chapters -name "*.md" ! -name "_*.md" -print0 | sort -z)
     } > SUMMARY.md
 }
@@ -789,7 +791,7 @@ cmd_release() {
     {
         printf "## [v%s] — %s\n\n" "${new_version}" "${date}"
         for change in "${changes[@]}"; do
-            printf "- %s\n" "${change}"
+            printf -- "- %s\n" "${change}"
         done
         printf "\n"
     } > "$entry_file"

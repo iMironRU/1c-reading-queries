@@ -79,6 +79,48 @@
   a[href^="/"]:after { content: ""; }
 }
 
+/* ─── Песочница: кнопка у листингов ```bsl,песочница ─────────────────── */
+
+.sandbox-block {
+    margin: 1em 0;
+}
+
+.sandbox-block > pre {
+    margin-bottom: 0;
+}
+
+.sandbox-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5em 0.9em;
+    padding: 0.45em 0.8em;
+    border: 1px solid var(--quote-border, rgba(128, 128, 128, 0.35));
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    font-size: 0.85em;
+}
+
+.sandbox-run {
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sandbox-run:hover {
+    text-decoration: underline;
+}
+
+.sandbox-note {
+    opacity: 0.6;
+}
+
+/* В печати кнопка не нужна — листинг остаётся листингом. */
+@media print {
+    .sandbox-bar { display: none; }
+    .sandbox-block > pre { border-radius: 5px; }
+}
+
 /* ─── Плашка «книга не дописана» ─────────────────────────────────────── */
 
 .book-status {
@@ -121,4 +163,41 @@
 
 .content table td:first-child {
     width: 38%;
+}
+
+/* ─── Боковая панель: дерево глав ──────────────────────────────────────────
+   Заголовок главы — узел без ссылки: mdBook кладёт его текст в голый <span>
+   внутри .chapter-link-wrapper и рисует приглушённо, как «черновик». Здесь это
+   не черновик, а раздел, и выглядеть должен как раздел. */
+
+.chapter > li.chapter-item > .chapter-link-wrapper > span {
+    color: var(--sidebar-fg);
+    font-weight: 600;
+    opacity: 1;
+    letter-spacing: .01em;
+}
+
+.chapter > li.chapter-item {
+    margin-top: .9em;
+}
+
+.chapter > li.chapter-item:first-child,
+.chapter > li.chapter-item:nth-child(2) {
+    margin-top: 0;
+}
+
+/* Параграфы внутри главы — мельче и с отступом, чтобы вложенность читалась */
+.chapter ol.section > li.chapter-item > .chapter-link-wrapper > a {
+    font-size: .93em;
+    line-height: 1.5;
+    padding-left: 14px;
+}
+
+/* Стрелка сворачивания: приглушить, чтобы не спорила с текстом */
+.chapter a.chapter-fold-toggle {
+    opacity: .45;
+}
+
+.chapter a.chapter-fold-toggle:hover {
+    opacity: 1;
 }
