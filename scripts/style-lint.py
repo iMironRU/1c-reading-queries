@@ -36,6 +36,10 @@ DEFAULT_SEVERITY = {
     #   style_lint: {severity: {backref: warning}}
     "backref": "off",
     "telling": "warning",   # рассказ там, где нужен показ
+    # Обращение к читателю. ВЫКЛЮЧЕНО по умолчанию: ядро канона «вы» разрешает
+    # и просит. Включают книги, которые в своей надстройке объявили безличный
+    # голос: style_lint: {severity: {impersonal: error}}
+    "impersonal": "off",
     "clerical": "error",    # канцелярит
     "opener": "error",      # шаблонные зачины
     "filler": "warning",    # пустые усиления — сильно зависят от контекста
@@ -242,6 +246,18 @@ def check_file(path, cfg):
 
     if sev("address") != "off":
         findings += check_mixed_address(text, path, sev("address"))
+
+    # Книги с безличным голосом: обращений к читателю нет вовсе. Внутри
+    # «кавычек» не ищем — там цитаты и устойчивые обороты вроде
+    # «мы позвоним вам».
+    if sev("impersonal") != "off":
+        clean = re.sub(r"«[^»]*»", lambda m: " " * len(m.group(0)), text)
+        pat = re.compile(r"(?<![А-Яа-яЁё])(вы|вас|вам|вами|ваш[а-яё]*)(?![А-Яа-яЁё])")
+        for i, line in enumerate(clean.split("\n"), 1):
+            for m in pat.finditer(line):
+                findings.append((sev("impersonal"), path, i, m.start() + 1, "impersonal",
+                                 f"обращение «{m.group(0)}» — книга объявила "
+                                 f"безличный голос: подлежащим ставим действующее лицо"))
 
     if sev("backref") != "off":
         findings += check_backrefs(raw, text, path, sev("backref"))
