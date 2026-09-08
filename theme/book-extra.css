@@ -166,15 +166,21 @@
 }
 
 /* ─── Боковая панель: дерево глав ──────────────────────────────────────────
-   Заголовок главы — узел без ссылки: mdBook кладёт его текст в голый <span>
-   внутри .chapter-link-wrapper и рисует приглушённо, как «черновик». Здесь это
-   не черновик, а раздел, и выглядеть должен как раздел. */
+   Заголовок главы — узел без ссылки, mdBook рисует такие приглушённо, как
+   «черновик». Здесь это не черновик, а раздел.
 
+   Разметка панели у разных версий mdBook разная: в одних текст узла лежит
+   прямо в <div>, в других — в <span> внутри .chapter-link-wrapper. Сборка
+   сайта идёт не на той версии, что стоит локально, поэтому селекторы даны
+   на оба варианта. */
+
+.chapter > li.chapter-item > div,
 .chapter > li.chapter-item > .chapter-link-wrapper > span {
     color: var(--sidebar-fg);
     font-weight: 600;
     opacity: 1;
     letter-spacing: .01em;
+    padding: 3px 0;
 }
 
 .chapter > li.chapter-item {
@@ -187,6 +193,7 @@
 }
 
 /* Параграфы внутри главы — мельче и с отступом, чтобы вложенность читалась */
+.chapter ol.section > li.chapter-item > a,
 .chapter ol.section > li.chapter-item > .chapter-link-wrapper > a {
     font-size: .93em;
     line-height: 1.5;
@@ -194,10 +201,12 @@
 }
 
 /* Стрелка сворачивания: приглушить, чтобы не спорила с текстом */
+.chapter a.toggle,
 .chapter a.chapter-fold-toggle {
     opacity: .45;
 }
 
+.chapter a.toggle:hover,
 .chapter a.chapter-fold-toggle:hover {
     opacity: 1;
 }

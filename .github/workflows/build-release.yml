@@ -73,6 +73,16 @@ jobs:
           chmod +x book.sh
           ./book.sh build ${{ steps.meta.outputs.filter }}
 
+      - name: Собрать задачи Judge (tasks.json)
+        run: |
+          if [ -d tasks ]; then
+            python3 -m pip install --quiet jsonschema || true
+            mkdir -p dist
+            python3 scripts/build-tasks.py --out dist/tasks.json
+          else
+            echo "Папки tasks/ нет — книга не публикует задачи."
+          fi
+
       - name: Упаковать артефакты из metadata.yaml
         run: |
           python3 - << 'PY'
@@ -114,7 +124,12 @@ jobs:
               f.write(notes)
           PY
 
+      # Релиз создаётся только по тегу. Ручной запуск (workflow_dispatch) нужен,
+      # чтобы пересобрать и опубликовать сайт, — тега у него нет, и без этого
+      # условия шаг падал с «GitHub Releases requires a tag», роняя за собой
+      # публикацию Pages.
       - name: Создать GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
