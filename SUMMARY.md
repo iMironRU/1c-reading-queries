@@ -27,6 +27,7 @@
   - [✏️ § 2.5. Отбор строк по условию](chapters/02_zapros_kak_predlozhenie/02-05_otbor_po_usloviyu.md)
   - [✏️ § 2.6. Параметры запроса и подстановка значений](chapters/02_zapros_kak_predlozhenie/02-06_parametry.md)
   - [✏️ § 2.7. Запуск в консоли и чтение ответа](chapters/02_zapros_kak_predlozhenie/02-07_zapusk_v_konsoli.md)
+  - [✏️ Ответы к части 2](chapters/02_zapros_kak_predlozhenie/02-99_otvety.md)
 
 - [Глава 3. Связи]()
   - [✏️ § 3.1. Чтение запроса с обращением через точку](chapters/03_svyazi/03-01_chtenie_s_tochkoy.md)
