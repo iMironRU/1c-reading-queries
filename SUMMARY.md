@@ -6,7 +6,7 @@
   - [✏️ § 0.1. Данные молчат](chapters/00_vstuplenie/00-01_dannye_molchat.md)
   - [✏️ § 0.2. Вопрос оживляет данные](chapters/00_vstuplenie/00-02_vopros_ozhivlyaet.md)
   - [✏️ § 0.3. Заказ формы ответа, а не самого ответа](chapters/00_vstuplenie/00-03_forma_otveta.md)
-  - [✏️ § 0.4. Образ архивариуса](chapters/00_vstuplenie/00-04_arhivarius.md)
+  - [✏️ § 0.4. Записка архивариусу](chapters/00_vstuplenie/00-04_arhivarius.md)
   - [✏️ § 0.5. Простой и составной вопрос](chapters/00_vstuplenie/00-05_prostoy_sostavnoy.md)
   - [✏️ § 0.6. Спросить можно лишь о том, что записано](chapters/00_vstuplenie/00-06_lish_o_zapisannom.md)
   - [✏️ § 0.7. Порог](chapters/00_vstuplenie/00-07_porog.md)
