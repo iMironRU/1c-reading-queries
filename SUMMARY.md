@@ -16,8 +16,10 @@
 - [Глава 1. Подготовка]()
   - [✏️ § 1.1. Учебная база «Канцтовары»](chapters/01_podgotovka/01-01_uchebnaya_baza.md)
   - [✏️ § 1.2. Консоль запросов](chapters/01_podgotovka/01-02_konsol_zaprosov.md)
+  - [✏️ § 1.3. Конструктор запросов](chapters/01_podgotovka/01-03_konstruktor.md)
   - [✏️ § 1.3. Конструктор запросов](chapters/01_podgotovka/01-03_konstruktor_zaprosov.md)
   - [✏️ § 1.4. Рабочее правило](chapters/01_podgotovka/01-04_rabochee_pravilo.md)
+  - [✏️ Ответы к части 1](chapters/01_podgotovka/01-99_otvety.md)
 
 - [Глава 2. Запрос как предложение]()
   - [✏️ § 2.1. Чтение готового простого запроса](chapters/02_zapros_kak_predlozhenie/02-01_chtenie_prostogo.md)
