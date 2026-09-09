@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 1.2. Консоль запросов

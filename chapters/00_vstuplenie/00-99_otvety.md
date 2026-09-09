@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # Ответы к части 0

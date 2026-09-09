@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 1.4. Рабочее правило

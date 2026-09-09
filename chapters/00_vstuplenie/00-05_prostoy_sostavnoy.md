@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 0.5. Простой и составной вопрос

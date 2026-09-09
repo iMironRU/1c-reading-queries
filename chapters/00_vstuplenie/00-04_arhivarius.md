@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 0.4. Записка архивариусу

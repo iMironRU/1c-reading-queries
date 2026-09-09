@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 1.1. Учебная база «Канцтовары»

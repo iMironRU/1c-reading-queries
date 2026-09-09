@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 0.1. Данные молчат

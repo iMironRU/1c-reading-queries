@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 0.2. Вопрос оживляет данные

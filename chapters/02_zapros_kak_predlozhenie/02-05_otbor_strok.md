@@ -1,5 +1,5 @@
 ---
-status: draft
+status: review
 ---
 
 # § 2.5. Отбор строк по условию
