@@ -40,10 +40,11 @@
   - [Ответы к части 3](chapters/03_svyazi/03-99_otvety.md)
 
 - [Глава 4. Свёртка]()
-  - [✏️ § 4.1. Чтение запроса с итогами](chapters/04_svyortka/04-01_chtenie_s_itogami.md)
-  - [✏️ § 4.2. Группировка и итоговые функции](chapters/04_svyortka/04-02_gruppirovka_funkcii.md)
-  - [✏️ § 4.3. Отбор до свёртки и после свёртки](chapters/04_svyortka/04-03_otbor_do_i_posle.md)
-  - [✏️ § 4.4. Иерархические итоги в одном результате](chapters/04_svyortka/04-04_ierarhicheskie_itogi.md)
+  - [§ 4.1. Чтение запроса с итогами](chapters/04_svyortka/04-01_chtenie_s_itogami.md)
+  - [§ 4.2. Группировка и итоговые функции](chapters/04_svyortka/04-02_gruppirovka_funkcii.md)
+  - [§ 4.3. Отбор до свёртки и после свёртки](chapters/04_svyortka/04-03_otbor_do_i_posle.md)
+  - [§ 4.4. Иерархические итоги в одном результате](chapters/04_svyortka/04-04_ierarhicheskie_itogi.md)
+  - [Ответы к части 4](chapters/04_svyortka/04-99_otvety.md)
 
 - [Глава 5. Регистры и виртуальные таблицы]()
   - [✏️ § 5.1. Чтение запроса к регистру](chapters/05_registry_i_virtualnye_tablicy/05-01_chtenie_k_registru.md)
