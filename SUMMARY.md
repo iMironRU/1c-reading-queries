@@ -47,11 +47,12 @@
   - [Ответы к части 4](chapters/04_svyortka/04-99_otvety.md)
 
 - [Глава 5. Регистры и виртуальные таблицы]()
-  - [✏️ § 5.1. Чтение запроса к регистру](chapters/05_registry_i_virtualnye_tablicy/05-01_chtenie_k_registru.md)
-  - [✏️ § 5.2. Регистр накопления](chapters/05_registry_i_virtualnye_tablicy/05-02_registr_nakopleniya.md)
-  - [✏️ § 5.3. Как регистр хранится в системе управления базами данных](chapters/05_registry_i_virtualnye_tablicy/05-03_fizika_hraneniya.md)
-  - [✏️ § 5.4. Виртуальные таблицы](chapters/05_registry_i_virtualnye_tablicy/05-04_virtualnye_tablicy.md)
-  - [✏️ § 5.5. Отбор в параметрах и в условии](chapters/05_registry_i_virtualnye_tablicy/05-05_parametry_vt_vs_uslovie.md)
+  - [§ 5.1. Чтение запроса к регистру](chapters/05_registry_i_virtualnye_tablicy/05-01_chtenie_k_registru.md)
+  - [§ 5.2. Регистр накопления](chapters/05_registry_i_virtualnye_tablicy/05-02_registr_nakopleniya.md)
+  - [§ 5.3. Как регистр хранится в системе управления базами данных](chapters/05_registry_i_virtualnye_tablicy/05-03_fizika_hraneniya.md)
+  - [§ 5.4. Виртуальные таблицы](chapters/05_registry_i_virtualnye_tablicy/05-04_virtualnye_tablicy.md)
+  - [§ 5.5. Отбор в параметрах и в условии](chapters/05_registry_i_virtualnye_tablicy/05-05_parametry_vt_vs_uslovie.md)
+  - [Ответы к части 5](chapters/05_registry_i_virtualnye_tablicy/05-99_otvety.md)
 
 - [Глава 6. Сборка сложного вопроса]()
   - [✏️ § 6.1. Чтение пакета с временной таблицей](chapters/06_sborka_slozhnogo_voprosa/06-01_chtenie_paketa.md)
