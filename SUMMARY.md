@@ -27,7 +27,9 @@
   - [✏️ § 2.3. Выбор полей и источник](chapters/02_zapros_kak_predlozhenie/02-03_vybor_poley.md)
   - [✏️ § 2.4. Почему не следует выбирать все поля без разбора](chapters/02_zapros_kak_predlozhenie/02-04_ne_vse_polya.md)
   - [✏️ § 2.5. Отбор строк по условию](chapters/02_zapros_kak_predlozhenie/02-05_otbor_po_usloviyu.md)
+  - [✏️ § 2.5. Отбор строк по условию](chapters/02_zapros_kak_predlozhenie/02-05_otbor_strok.md)
   - [✏️ § 2.6. Параметры запроса и подстановка значений](chapters/02_zapros_kak_predlozhenie/02-06_parametry.md)
+  - [✏️ § 2.7. Запуск в консоли и чтение ответа](chapters/02_zapros_kak_predlozhenie/02-07_zapusk_i_chtenie.md)
   - [✏️ § 2.7. Запуск в консоли и чтение ответа](chapters/02_zapros_kak_predlozhenie/02-07_zapusk_v_konsoli.md)
   - [✏️ Ответы к части 2](chapters/02_zapros_kak_predlozhenie/02-99_otvety.md)
 
