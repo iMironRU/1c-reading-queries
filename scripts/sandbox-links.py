@@ -26,7 +26,7 @@ import sys
 import urllib.parse
 
 FENCE = re.compile(r"^```запрос,песочница\n(.*?)^```[ \t]*$", re.S | re.M)
-LINK_LINE = re.compile(r"^\[▶ [^\]]*\]\([^)]*\)[ \t]*$", re.M)
+LINK_LINE = re.compile(r"^\[▶ [^\]]*\]\(([^)]*)\)[ \t]*$", re.M)
 LABEL = "▶ Выполнить в песочнице"
 
 
@@ -50,6 +50,36 @@ def read_meta(path="metadata.yaml"):
 def encode(query):
     packed = gzip.compress(query.encode("utf-8"), mtime=0)
     return base64.b64encode(packed).decode().replace("+", "-").replace("/", "_").rstrip("=")
+
+
+def decode(gzq):
+    """Обратно из параметра в текст запроса. Побайтно сжатие у разных
+    сборок python отличается, поэтому ссылки сверяются по смыслу: что
+    в них лежит, а не какими байтами это записано."""
+    std = gzq.replace("-", "+").replace("_", "/")
+    std += "=" * ((4 - len(std) % 4) % 4)
+    try:
+        return gzip.decompress(base64.b64decode(std)).decode("utf-8")
+    except Exception:
+        return None
+
+
+def same_link(existing, query, meta, title, source):
+    """Ведёт ли уже стоящая ссылка туда же, куда повела бы новая."""
+    try:
+        parts = urllib.parse.urlsplit(existing)
+        params = dict(urllib.parse.parse_qsl(parts.query))
+    except ValueError:
+        return False
+    if parts.scheme + "://" + parts.netloc + parts.path != meta.get(
+            "sandbox.url", "https://imiron.ru/BSLexicon/query/"):
+        return False
+    if decode(params.get("gzq", "")) != query:
+        return False
+    for key, name in (("sandbox.schema_src", "schema-src"), ("sandbox.data_src", "data-src")):
+        if params.get(name, "") != (meta.get(key) or ""):
+            return False
+    return params.get("source", "") == (source or "") and params.get("title", "") == (title or "")
 
 
 def page_url(site_url, path):
@@ -88,7 +118,7 @@ def process(path, meta, check):
         existing = LINK_LINE.match(tail.lstrip("\n"))
         if existing:
             skip = len(tail) - len(tail.lstrip("\n")) + existing.end()
-            if tail[:skip].strip() == link:
+            if same_link(existing.group(1), m.group(1).strip(), meta, title, source):
                 out.append(tail[:skip])
                 pos += skip
                 continue
