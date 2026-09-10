@@ -65,11 +65,12 @@
   - [Ответы к части 6](chapters/06_sborka_slozhnogo_voprosa/06-99_otvety.md)
 
 - [Глава 7. Обработка результата]()
-  - [✏️ § 7.1. Запуск запроса из встроенного языка](chapters/07_obrabotka_rezultata/07-01_zapusk_iz_yazyka.md)
-  - [✏️ § 7.2. Выгрузка целиком и выборка по строке](chapters/07_obrabotka_rezultata/07-02_vygruzka_i_vyborka.md)
-  - [✏️ § 7.3. Прямой обход и обход по группировкам](chapters/07_obrabotka_rezultata/07-03_obhody.md)
-  - [✏️ § 7.4. Согласие обхода с формой запроса](chapters/07_obrabotka_rezultata/07-04_soglasie_obhoda_s_formoy.md)
-  - [✏️ § 7.5. Единый порядок](chapters/07_obrabotka_rezultata/07-05_edinyy_poryadok.md)
+  - [§ 7.1. Запуск запроса из встроенного языка](chapters/07_obrabotka_rezultata/07-01_zapusk_iz_yazyka.md)
+  - [§ 7.2. Выгрузка целиком и выборка по строке](chapters/07_obrabotka_rezultata/07-02_vygruzka_i_vyborka.md)
+  - [§ 7.3. Прямой обход и обход по группировкам](chapters/07_obrabotka_rezultata/07-03_obhody.md)
+  - [§ 7.4. Согласие обхода с формой запроса](chapters/07_obrabotka_rezultata/07-04_soglasie_obhoda_s_formoy.md)
+  - [§ 7.5. Единый порядок](chapters/07_obrabotka_rezultata/07-05_edinyy_poryadok.md)
+  - [Ответы к части 7](chapters/07_obrabotka_rezultata/07-99_otvety.md)
 
 - [Глава 8. Проектирование под быструю выборку]()
   - [✏️ § 8.1. Чтение двух запросов](chapters/08_proektirovanie_pod_bystruyu_vyborku/08-01_chtenie_dvuh_zaprosov.md)
