@@ -11,7 +11,7 @@ status: review
 
 Читаем чужое, как договорились.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Реализация.Дата,
     Реализация.Номер,
@@ -22,6 +22,8 @@ status: review
 ГДЕ
     Реализация.Проведен = ИСТИНА
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_5WPQQrCMBRE9zlFDiC9gXcLVdwataIUitqtLopaLFZ7hpcbOSHbUjCb_GHmz8xny5UNZzw1N2P1BFoaejpeNGFFF9YZhcacZjYhqRj40AY3JSol-oY8OFEPCTRnHLVb_b1Va-iVt4ykkckhORTC77CIXZJwxFLLA3chF3-rAE85Gm7YyXE_Ue6UTEQ9Y6KdW3W5KCGe5X_71csSYgEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F03_svyazi%2F03-01_chtenie_s_tochkoy.html&title=%C2%A7+3.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D1%81+%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5%D0%BC+%D1%87%D0%B5%D1%80%D0%B5%D0%B7+%D1%82%D0%BE%D1%87%D0%BA%D1%83)
 
 ## Разбор
 

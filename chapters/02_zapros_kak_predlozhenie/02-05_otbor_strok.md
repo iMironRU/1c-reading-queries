@@ -13,7 +13,7 @@ status: review
 
 ## Что делает условие
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование,
     Товары.Артикул
@@ -22,6 +22,8 @@ status: review
 ГДЕ
     Товары.ЭтоГруппа = ЛОЖЬ
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NQQrCUAxE9_8U_wDSG3i3Yhcu3FRrVSqKurXCp1AoVX-v8HIjB7tRaLKYSTKTYcOdNRdybtTOq0QiDcFSWyWcCHS8aHmPa2FHO5uQ5oKFjr1lPB0H9qPoymCpjA3Rll97n_w6PZXiq79vjoIt5UTKQxmRQkPGoA5-7jlyZkf9AeR6PXvOAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-05_otbor_strok.html&title=%C2%A7+2.5.+%D0%9E%D1%82%D0%B1%D0%BE%D1%80+%D1%81%D1%82%D1%80%D0%BE%D0%BA+%D0%BF%D0%BE+%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8E)
 
 Условие проверяется **для каждой строки источника отдельно**. Подошла — строка в
 ответе; не подошла — её нет. Ничего другого условие не делает: оно не меняет

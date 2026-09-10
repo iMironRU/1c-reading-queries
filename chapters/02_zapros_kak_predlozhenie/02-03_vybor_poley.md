@@ -13,13 +13,15 @@ status: review
 
 ## Две обязательные части
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование,
     Товары.Артикул
 ИЗ
     Справочник.Товары КАК Товары
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NOwqAQAxEe0_hAcQzihYWNquNIghqq8WyIIjfK7zcyKCNgmlmSOZNKBjIaTH0jJ6vo-bAYSWSLKTBMrMxsT9r1Zkp-IkalViPiySsHhXlE-o4JVLQcUh640v4Jn1qfV9_2i7Qun1emAAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-03_vybor_poley.html&title=%C2%A7+2.3.+%D0%92%D1%8B%D0%B1%D0%BE%D1%80+%D0%BF%D0%BE%D0%BB%D0%B5%D0%B9+%D0%B8+%D0%B8%D1%81%D1%82%D0%BE%D1%87%D0%BD%D0%B8%D0%BA)
 
 `ВЫБРАТЬ` перечисляет поля, `ИЗ` называет источник. Без источника запрос
 бессмыслен — брать неоткуда; без перечня полей нечего показывать.
@@ -46,13 +48,15 @@ status: review
 
 По умолчанию колонка в ответе называется так же, как поле. Это можно изменить.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование КАК Товар,
     Товары.Артикул      КАК Код
 ИЗ
     Справочник.Товары КАК Товары
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NPQqDQBSEe0-xBxDPKFqksDFpIguBJK0Wy5KFxd8rfO9GPpSAoNPM4zHfDA9a7ryp-dIlRqXHjMdJLlXGC0dkJDDtb_VIMFhF7CGcXsC1WqHxXkoGs-nPWc39EhqeO_dhkVzbPbPcto0-O5adB6VaAWAUTSO9AAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-03_vybor_poley.html&title=%C2%A7+2.3.+%D0%92%D1%8B%D0%B1%D0%BE%D1%80+%D0%BF%D0%BE%D0%BB%D0%B5%D0%B9+%D0%B8+%D0%B8%D1%81%D1%82%D0%BE%D1%87%D0%BD%D0%B8%D0%BA)
 
 Тот же `КАК`, что и у источника, но работа другая: там он давал имя таблице
 внутри запроса, здесь даёт имя колонке в ответе.
@@ -72,13 +76,15 @@ status: review
 В перечне не обязано стоять поле. Там может стоять что угодно, что вычисляется по
 строке.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар,
     СтрокиРеализации.Количество * СтрокиРеализации.Цена КАК Сумма
 ИЗ
     Документ.РеализацияТоваров.Товары КАК СтрокиРеализации
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_42PsQrCUAxF937Fm0X6jfUJOjhYpVDppA4uOjyEYqn6vuHkj7xPBwuCNBmS3OTeJGw5s2FPyZFL5mQczFtBpKdToyVwV3Yj2EKxyzUZuaospiMJjZqCbElrM_MiRzcZwTsJfBKcBEqaRJjzkIeMHfVneZUE3rhmzee_Srb-Xpzi4AFbDbT_HvMCIZcsPikBAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-03_vybor_poley.html&title=%C2%A7+2.3.+%D0%92%D1%8B%D0%B1%D0%BE%D1%80+%D0%BF%D0%BE%D0%BB%D0%B5%D0%B9+%D0%B8+%D0%B8%D1%81%D1%82%D0%BE%D1%87%D0%BD%D0%B8%D0%BA)
 
 Колонка `Сумма` не хранится нигде — она считается для каждой строки при
 выполнении. Здесь стоит вспомнить самое начало книги: ответ не находят, а считают,

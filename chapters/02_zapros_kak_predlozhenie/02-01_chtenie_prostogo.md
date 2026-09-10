@@ -18,13 +18,15 @@ status: review
 
 Вот он целиком.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование,
     Товары.Артикул
 ИЗ
     Справочник.Товары КАК Товары
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NOwqAQAxEe0_hAcQzihYWNquNIghqq8WyIIjfK7zcyKCNgmlmSOZNKBjIaTH0jJ6vo-bAYSWSLKTBMrMxsT9r1Zkp-IkalViPiySsHhXlE-o4JVLQcUh640v4Jn1qfV9_2i7Qun1emAAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-01_chtenie_prostogo.html&title=%C2%A7+2.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE+%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0)
 
 Четыре строки, три слова заглавными. Скорее всего, вы уже поняли, о чём он, — и
 это не случайность.
@@ -75,7 +77,7 @@ status: review
 
 Добавим условие.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование,
     Товары.Артикул
@@ -84,6 +86,8 @@ status: review
 ГДЕ
     Товары.ЭтоГруппа = ЛОЖЬ
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NQQrCUAxE9_8U_wDSG3i3Yhcu3FRrVSqKurXCp1AoVX-v8HIjB7tRaLKYSTKTYcOdNRdybtTOq0QiDcFSWyWcCHS8aHmPa2FHO5uQ5oKFjr1lPB0H9qPoymCpjA3Rll97n_w6PZXiq79vjoIt5UTKQxmRQkPGoA5-7jlyZkf9AeR6PXvOAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-01_chtenie_prostogo.html&title=%C2%A7+2.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE+%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0)
 
 Колонок по-прежнему две: перечень после `ВЫБРАТЬ` не изменился. А строк стало
 меньше — из ответа ушли группы справочника, остались только сами товары.
@@ -125,7 +129,7 @@ status: review
 **Прочтите по образцу.** Возьмите запрос и ответьте на два вопроса, ничего не
 выполняя: о чём спрашивают и что вернётся.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Контрагенты.Наименование,
     Контрагенты.ИНН,
@@ -136,6 +140,8 @@ status: review
     Контрагенты.ПометкаУдаления = ЛОЖЬ
 ```
 
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_32PTQ6CQAyF95xiDmC4gXczxMSFC_HfYPAHl7Ig6CQEBK_w9UZ2xq1OF01f-95ry4o7Sy6kFJSR0SBjoJdEJlQ8sL6ex-QKG16uoYRaUa_YjoKig8ryMKXQssPK1I0jVey_9CtvT60ZZOZ3tfFvD2edkv3ZELFmwzZ4w1nb-pkktDq48dTc-U8bWZix4ciJHeUHZzlstS8BAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-01_chtenie_prostogo.html&title=%C2%A7+2.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE+%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0)
+
 **Проверьте себя в консоли.** Выполните оба запроса из параграфа в консоли на
 базе «Канцтоваров». Совпало ли число колонок с тем, что вы назвали до
 выполнения? А число строк вы предсказать не могли — почему?
@@ -143,7 +149,7 @@ status: review
 **Испортите форму.** Не выполняя, скажите, что вернёт такой запрос и чем ответ
 будет отличаться от первого запроса параграфа.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование
 ИЗ
@@ -151,5 +157,7 @@ status: review
 ГДЕ
     Товары.ЭтоГруппа = ЛОЖЬ
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22NSwqDUAxF528VbwXuoHuTduCgE6tWRVFsp7XwEAQRP1s42VGDTiqYDJJ7czkh4sODhpA3rbFauix0OPHl7lHhGJjomXdb50BvyMn2-ItVfPU7Fgm26-j9MyyF0osD1xCT8Dz595WryljFjVXb2YulpCal_QHDT7VBrQAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-01_chtenie_prostogo.html&title=%C2%A7+2.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B3%D0%BE%D1%82%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE+%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0)
 
 Ответы — в конце части.

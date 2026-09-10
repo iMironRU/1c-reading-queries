@@ -29,7 +29,7 @@ status: review
 
 ## Как это записывается
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Товары.Наименование,
     Остатки.КоличествоОстаток
@@ -39,6 +39,8 @@ status: review
             РегистрНакопления.ТоварыНаСкладах.Остатки КАК Остатки
         ПО Товары.Ссылка = Остатки.Товар
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_2WQSw6CQBBE95yCAxhu4N3UxLhg4ScSDQYUt7ogKMlk_F3hzY0shgRFZ1ND87q6elhxYsmBBUfOQaijy5OK0o1cHJFRYrhT82jLUkM9aNHcjd1E6ASLiUiF3DBuRu1_VPr-IE9swJZN21rwciPZiRHfmNroe3QotwVpL47v9N07ElbkJI2RhLWcM2kmTTrOsweFvyiVcmhis5CV5UtJm6WMm_fmeqAQcpNeVZtG_TW7YL3qJ9qe_OcNC4Gx_CxlOPx7tA59A6q3sIeMAQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F03_svyazi%2F03-04_yavnye_soedineniya.html&title=%C2%A7+3.4.+%D0%AF%D0%B2%D0%BD%D1%8B%D0%B5+%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D1%8F)
 
 Три вещи, которых не было раньше.
 

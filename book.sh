@@ -1016,6 +1016,17 @@ cmd_lint() {
     python3 scripts/style-lint.py ${args[@]+"${args[@]}"}
 }
 
+# ─── SANDBOX-LINKS ───────────────────────────────────────────────────────────
+cmd_sandbox_links() {
+    if [[ ! -f scripts/sandbox-links.py ]]; then
+        error "scripts/sandbox-links.py не найден. Запустите: ./book.sh sync"
+        exit 1
+    fi
+    header "Ссылки в песочницу под исполнимыми запросами"
+    echo ""
+    python3 scripts/sandbox-links.py "$@"
+}
+
 # ─── TASKS ───────────────────────────────────────────────────────────────────
 cmd_tasks() {
     if [[ ! -d tasks ]]; then
@@ -1038,6 +1049,7 @@ show_help() {
     echo -e "    ${CYAN}build [фильтр]${RESET}    Собрать форматы (ready | review | all)"
     echo -e "    ${CYAN}lint [пути]${RESET}       Проверить стиль по канону (docs/style-guide.md)"
     echo -e "    ${CYAN}summary${RESET}           Перегенерировать SUMMARY.md"
+    echo -e "    ${CYAN}sandbox-links${RESET}     Обновить ссылки в песочницу под блоками «запрос,песочница»"
     echo -e "    ${CYAN}tasks${RESET}             Собрать tasks/*.yaml в tasks.json (задачи BSLexicon)"
     echo -e "    ${CYAN}release${RESET}           Выпустить версию (changelog + git tag)"
     echo -e "    ${CYAN}sync${RESET}              Проверить и применить обновления шаблона"
@@ -1086,6 +1098,7 @@ case "$COMMAND" in
     status)  cmd_status ;;
     build)   cmd_build "${1:-all}" ;;
     lint)    cmd_lint "$@" ;;
+    sandbox-links) cmd_sandbox_links "$@" ;;
     summary) check_metadata; _generate_summary "${1:-all}"; success "→ SUMMARY.md" ;;
     tasks)   check_metadata; cmd_tasks "$@" ;;
     release) cmd_release ;;

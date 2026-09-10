@@ -11,7 +11,7 @@ status: review
 
 Читаем чужое.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар,
     СУММА(СтрокиРеализации.Количество) КАК Количество
@@ -20,6 +20,8 @@ status: review
 СГРУППИРОВАТЬ ПО
     СтрокиРеализации.Товар
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_5WQSwrCQBBE9znFLBUkZ4wRdOHCGAVDkPjJUhdBCAY_OcPrG1khooJCcHrRPVXTXTVNzIE5WyL2HD2nw85CC6i5UIkoKbiqOlPYWLny9bLmpGsweDaQs1ZEve7eVKQgm1Da0ELNqftOaETqfpEeCatWZtnMtRE3zb1b6H8L2OztrckfVm36Uunw6Ok_CxE5G0WiKiNu9-MEZP8u6QGKwWBwYwEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-01_chtenie_s_itogami.html&title=%C2%A7+4.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D1%81+%D0%B8%D1%82%D0%BE%D0%B3%D0%B0%D0%BC%D0%B8)
 
 ## Разбор
 
@@ -57,7 +59,7 @@ status: review
 
 А теперь то, ради чего глава и написана. Заменим последние две строки.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар,
     СтрокиРеализации.Количество
@@ -68,6 +70,8 @@ status: review
 ПО
     Товар
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_42OywrCQAxF9_MVXSpIv7GOoAsX1gdYilStS10UoVh89BtO_shbKioo6GSRZJKTe5mxZ8qGmJyDC_TYmreImjOVBiUFF1UnChsqV6E2a45qo96fQKqhvmxEaX3zgmtHwrLFFw1qA65Cb-bDzxs2eWk2-c2CjQOdj0l_2mgUczLmJA_b7Fgp4s43g13HmqzdfKrdASHneI8vAQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-01_chtenie_s_itogami.html&title=%C2%A7+4.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D1%81+%D0%B8%D1%82%D0%BE%D0%B3%D0%B0%D0%BC%D0%B8)
 
 Ответ перестаёт быть таблицей.
 

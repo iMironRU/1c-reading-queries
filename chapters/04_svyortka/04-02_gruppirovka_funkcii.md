@@ -47,7 +47,7 @@ status: review
 | `МАКСИМУМ`, `МИНИМУМ` | крайние значения |
 | `СРЕДНЕЕ` | среднее значение поля по собранным строкам |
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар,
     СУММА(СтрокиРеализации.Количество) КАК Продано,
@@ -58,6 +58,8 @@ status: review
 СГРУППИРОВАТЬ ПО
     СтрокиРеализации.Товар
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_5WSTW7CQAyF9zlFliBVnJEftSyyaBpARCmEBqR20S6iCgSikDN8vlHfhBEgkFqYWYzH9vN79gwJn7zwRsycryDUorCutanYslFgRcmPrDWlPenctJRZ8a1r-8EDWDDRjhv_YzMF5bI-K-tYV3WqZihvTBYyq7FLofZUvnhGzispH4xENCchb9R6x949VQejG1QX4ovk3FKeGBOGDmM9dsLsJai0R888cSniTGWpwRuae3c1zssXytkp_kxikXVqrLv5xEC1xweyCxmtawLBjoN359k7WHRi_FtjIEkDBRbMtFNZuWZQP77GT37vD_gF3xVrLEACAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-02_gruppirovka_funkcii.html&title=%C2%A7+4.2.+%D0%93%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0+%D0%B8+%D0%B8%D1%82%D0%BE%D0%B3%D0%BE%D0%B2%D1%8B%D0%B5+%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8)
 
 Три разных вопроса к одной и той же собранной кучке строк: сколько всего, в
 скольких документах, по какой наибольшей цене.

@@ -49,6 +49,14 @@ jobs:
             echo "scripts/style-lint.py отсутствует — проверка пропущена"
           fi
 
+      - name: Сверить ссылки в песочницу с запросами
+        run: |
+          if [ -f scripts/sandbox-links.py ]; then
+            python3 scripts/sandbox-links.py --check
+          else
+            echo "scripts/sandbox-links.py отсутствует — проверка пропущена"
+          fi
+
       - name: Установить Pandoc
         run: |
           wget -q https://github.com/jgm/pandoc/releases/download/3.5/pandoc-3.5-1-amd64.deb

@@ -13,7 +13,7 @@ status: review
 
 ## Как это выглядит
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Реализация.Дата,
     Реализация.Контрагент,
@@ -24,6 +24,8 @@ status: review
     Реализация.Дата МЕЖДУ &Начало И &Конец
     И Реализация.Контрагент = &Клиент
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_42QOw7CMBBE-5zCFRXKDbgbClIoCZ9AFIHEp4TCAkVEfHyG5xsxcToUBezCO7szs7tmwZk5ezKOXCKjI1BheVJzx_qU2s9iVgoT7LCHUuJ4-8SPVbqJoLiPfvATXrpW3o5HQEGEjSjYtNKvWtzlpdEdV6Fx8xoNklF2do1YyjH_vadhS85a8GQG7JScBq4zFEqEVal82joV__-IGQV5Qwz4A6mQZ7iBAQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F02_zapros_kak_predlozhenie%2F02-06_parametry.html&title=%C2%A7+2.6.+%D0%9F%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D0%B8+%D0%BF%D0%BE%D0%B4%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0+%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9)
 
 Три параметра. Перед выполнением каждому дают значение: в консоли — в отдельной
 таблице параметров, в коде — присваиванием запросу.

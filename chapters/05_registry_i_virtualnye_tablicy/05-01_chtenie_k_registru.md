@@ -9,7 +9,7 @@ status: review
 До сих пор источниками были справочники и документы — то, что вводят руками.
 Теперь запрос к тому, чего руками никто не вводил.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Остатки.Товар,
     Остатки.КоличествоОстаток
@@ -17,6 +17,8 @@ status: review
     РегистрНакопления.ТоварыНаСкладах.Остатки(&НаДату, Склад = &Склад)
         КАК Остатки
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22PTQrCMBCF9z1FVkWh9AberSriwoU_CEpBqW51UVoDpcV6hS838hkXUTEQwnvvm5kMGy6sKVhx5hoZHY5u7CaUui1NKr-nksySv3GuuKNxc6wPKumA9LQRe3bv0gJLLVapyzhQqkXPQ_WWu_zlxzS38MBJSKf3Jm-Wfg8fxB7ZvrSbJibAZmTioIZ-uv9BrkXznx2entFsPQQBAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F05_registry_i_virtualnye_tablicy%2F05-01_chtenie_k_registru.html&title=%C2%A7+5.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D0%BA+%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D1%83)
 
 ## Разбор
 
@@ -57,7 +59,7 @@ status: review
 
 Тот же вопрос можно записать иначе:
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     Остатки.Товар,
     Остатки.КоличествоОстаток
@@ -66,6 +68,8 @@ status: review
 ГДЕ
     Остатки.Склад = &Склад
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22OSwqCUBiF567ijqRA3EF7syIaNMheFEJhTWsgliBKtoXv7qjTDbLCCz-Xc873P1hyZkFKzImLZ_Q42KEdkakqylB-Qy4ZBZ1xorimtFMKF-TSLdJQeezYvltTCq5ildqIPZlGNDzUX3CXP__aZmcOOAqp9d_kTcLf5T3fIeuXtuPA9I2uiUn-bvRYidl0Xv8ZbwbGb9UTHoLU3BcBAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F05_registry_i_virtualnye_tablicy%2F05-01_chtenie_k_registru.html&title=%C2%A7+5.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D0%BA+%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D1%83)
 
 Здесь ответ получится тот же: отбор идёт по складу, а склад — измерение регистра.
 Работа при этом разная, и насколько разная, разбирается в конце главы.

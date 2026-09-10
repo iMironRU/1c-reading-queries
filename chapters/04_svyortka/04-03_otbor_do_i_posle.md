@@ -24,7 +24,7 @@ status: review
 
 ## Где что пишут
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар,
     СУММА(СтрокиРеализации.Сумма) КАК Продано
@@ -37,6 +37,8 @@ status: review
 ИМЕЮЩИЕ
     СУММА(СтрокиРеализации.Сумма) > 100000
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_6VQwQqCQBC971fssSBk-4G-TQy6dMg0SUQ08xRFSCRJpd_w9o96aljQwaKdw8ywb968N3CwxxIb2NjiICQfEm1pExWuKPiRI8ON1QWZnjEXBpEVTmzN0XMAKUKGPeifTfQUd0Y2lAi4NZCIm4kzsSUqAR_rlnZV8zTwHKW2jE9CvXhpqfObND3v-Hs0Cbhc5X3pvdMvJ3KslBJ07xKaImb4rCI47TXpDNGvJ639h_BwxI6V99eBW4VKPQCuDPPp5QEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-03_otbor_do_i_posle.html&title=%C2%A7+4.3.+%D0%9E%D1%82%D0%B1%D0%BE%D1%80+%D0%B4%D0%BE+%D1%81%D0%B2%D1%91%D1%80%D1%82%D0%BA%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5+%D1%81%D0%B2%D1%91%D1%80%D1%82%D0%BA%D0%B8)
 
 `ГДЕ` работает до свёртки, `ИМЕЮЩИЕ` — после.
 

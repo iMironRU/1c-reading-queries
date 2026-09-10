@@ -8,7 +8,7 @@ license: "CC BY-NC-ND 4.0"
 version: "0.1.0"
 
 template_repo: "https://github.com/iMironRU/book-template"
-template_version: "v0.2.1"
+template_version: "v0.2.2"
 
 formats:
   epub:     true
@@ -26,6 +26,13 @@ nightly_filter: "all"
 artifacts: []
 
 site_url: "https://imiron.ru/1c-reading-queries/"
+
+# Песочница языка запросов: учебная база книги лежит рядом, в assets/sandbox,
+# и подключается по ссылке. Ссылки под запросами ставит scripts/sandbox-links.py.
+sandbox:
+  url: "https://imiron.ru/BSLexicon/query/"
+  schema_src: "https://raw.githubusercontent.com/iMironRU/1c-reading-queries/main/assets/sandbox/kanctovary.schema.yaml"
+  data_src: "https://raw.githubusercontent.com/iMironRU/1c-reading-queries/main/assets/sandbox/kanctovary.data.yaml"
 
 nightly:
   enabled: true

@@ -63,12 +63,14 @@ status: review
 
 Точек может быть сколько угодно.
 
-```bsl,платформа
+```запрос,песочница
 ВЫБРАТЬ
     СтрокиРеализации.Товар.ЕдиницаИзмерения.Наименование
 ИЗ
     Документ.РеализацияТоваров.Товары КАК СтрокиРеализации
 ```
+
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_4WOPQrCQBSE-5wiJ9gzhgg2KRJFMQSEJK0Wi7i4-JMzfO9GziaFgoXbvH3fzGOGLSc29DSMnLNcj8FKK5i4EyUEPA_9bnhba0Yn58RFa-HYcxV7EaV5WrmeBF2HmdWOo3BMUGC-SgIhk_ewxO1SlK0Wj5XuN9PqT2SaXw2syulUvvtb-w3OC0-z6gAAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F03_svyazi%2F03-02_obraschenie_cherez_tochku.html&title=%C2%A7+3.2.+%D0%9E%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5+%D1%87%D0%B5%D1%80%D0%B5%D0%B7+%D1%82%D0%BE%D1%87%D0%BA%D1%83)
 
 Читается справа налево: наименование единицы измерения товара строки. Участвуют
 три таблицы, названа одна.
