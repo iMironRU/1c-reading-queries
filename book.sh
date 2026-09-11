@@ -433,7 +433,17 @@ print(m.group(1) if m else 'ready')
         local epub_css=()
         [[ -f assets/print/epub-base.css ]] && epub_css+=(--css=assets/print/epub-base.css)
         [[ -f assets/print/epub.css ]]      && epub_css+=(--css=assets/print/epub.css)
-        pandoc "${file_list[@]}" "${pandoc_flags[@]}" ${epub_css[@]+"${epub_css[@]}"} -o "${base}.epub"
+        # Оглавление в EPUB — дело читалки: nav.xhtml она показывает в своём
+        # меню. С --toc pandoc вдобавок вставляет его страницей в поток книги,
+        # и читатель листает содержание, прежде чем дойти до текста.
+        local epub_flags=()
+        local flag
+        for flag in "${pandoc_flags[@]}"; do
+            [[ "$flag" == "--toc" ]] || epub_flags+=("$flag")
+        done
+        # Титульная страница повторяет обложку: при обложке она лишняя.
+        [[ -f assets/img/cover.png ]] && epub_flags+=(--epub-title-page=false)
+        pandoc "${file_list[@]}" "${epub_flags[@]}" ${epub_css[@]+"${epub_css[@]}"} -o "${base}.epub"
         success "→ ${base}.epub"
     fi
 

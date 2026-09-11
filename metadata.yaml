@@ -8,7 +8,7 @@ license: "CC BY-NC-ND 4.0"
 version: "0.1.0"
 
 template_repo: "https://github.com/iMironRU/book-template"
-template_version: "v0.2.3"
+template_version: "v0.2.4"
 
 formats:
   epub:     true
