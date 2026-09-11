@@ -24,21 +24,25 @@ status: review
 ИТОГИ
     СУММА(СуммаДокумента)
 ПО
+    ОБЩИЕ,
     Контрагент
 ```
 
-[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_32PzQrCMBCE73mKHhWkz1gqeDX-gKVItfWoh6AUiz99hi9v5LS5SejuYXfYmcmELVc2nLE03EyiEmhxvOl44vyKzq9T9lpz3GKCUtLz9bnPdHqIoH2KXvslH7WTd89rRKMIZyg4BOnfLY15KXrPXSgbZqIgljL66mDcULGjCPY1F45qO5vKMzecqIIi8ssf6wCIc0UBAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-04_ierarhicheskie_itogi.html&title=%C2%A7+4.4.+%D0%98%D0%B5%D1%80%D0%B0%D1%80%D1%85%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5+%D0%B8%D1%82%D0%BE%D0%B3%D0%B8+%D0%B2+%D0%BE%D0%B4%D0%BD%D0%BE%D0%BC+%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B5)
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_32QzQrCMBCE732KHhWkz1gqeLX-YSkSbT2JHoIiFn_yDF_eyGnjSUqzh-ywM5PZsOTMggM5NZco1hG4Y3nR8MD6GY2fJ6zVZtjJAKXE8fGZTzW6iaB-iF75KW-Vlbfj2aFOhI0o2Abp3yzp81J0x1Uobe9YQXLK3ldb4xrDiiLYVxzZqfLRUJ5xxB4TFEbfdZLN5rdbz9ZfkdC--lUBAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-04_ierarhicheskie_itogi.html&title=%C2%A7+4.4.+%D0%98%D0%B5%D1%80%D0%B0%D1%80%D1%85%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5+%D0%B8%D1%82%D0%BE%D0%B3%D0%B8+%D0%B2+%D0%BE%D0%B4%D0%BD%D0%BE%D0%BC+%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B5)
 
 `ИТОГИ` называет, что подсчитать, `ПО` — на каких уровнях. Подробности при этом
 никуда не деваются.
 
 ```текст
-  Итого                      425 000
-    ▼ ООО «Ромашка»          340 000
-        12.03                120 000
-        19.03                220 000
-    ▼ ООО «Восход»            85 000
-        15.03                 85 000
+  Итого                  117 900
+    ▼ ООО «Ромашка»       79 300
+        17.03             73 000
+        02.04              6 000
+        05.04                300
+    ▼ ИП Сидоров          35 000
+        19.03             35 000
+    ▼ ЗАО «Восход»         3 600
+        20.03              3 600
 ```
 
 Ответ — дерево: **в корне общий итог, ниже итоги по уровням, в листьях
@@ -101,8 +105,8 @@ status: review
 ## Главное
 
 `ИТОГИ … ПО` подсчитывает суммы на заданных уровнях, не удаляя подробностей:
-ответ перестаёт быть плоской таблицей и становится деревом, в котором строки-итоги
-чередуются с исходными, а внизу стоит общий итог. Этим он противоположен
+ответ перестаёт быть плоской таблицей и становится деревом: в корне общий итог,
+ниже итоги по уровням, в листьях исходные строки. Этим он противоположен
 группировке: та подробности заменяет и ответ сокращает, а итоги подробности
 сохраняют и ответ наращивают. Дерево в ответе — особенность платформы, а не общее
 свойство языков запросов, и у неё есть последствие: обходить такой результат так

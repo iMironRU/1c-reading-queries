@@ -33,7 +33,9 @@ status: review
 
 [▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_3VRQU7DMBC8-xV-AMoHEH9rgxCHHIC0FlUhJeFakKLSSFYKyRdmf8Q4CcZJU0uR7fXs7MwEKfZ4Qo5HvONDaS4eGhxQykKSCIUsJcEJNUqNLWHbAHA105ChhMU3Kvz0Ze4WlW--8K7whh1eYVCQb-PUaB5bWFkSVyvWnvtxrMqCfQc0ct9111Go4VynJAorrGF6ggxmIvpTYl5XvNxyZIvSjctcB7kKnnOKS_uQtFM6Ma6uFWaSDPRfDGbIcMecY1LFTNpGnNowdEt_VfdArwGEfN7kqDpO6W-2x4Z56mHhhSZT2jPunRtdO--G32ZIzGNzqv9yFBLzFzhHNclaSnWurDyMfkQHKAg5cT-ydheNfc6YYPVfGoOehOjZ9c1ZZv7tF40aTA7VAgAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F06_sborka_slozhnogo_voprosa%2F06-06_indeksirovanie_vt.html&title=%C2%A7+6.6.+%D0%98%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5+%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D0%BE%D0%B9+%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86%D1%8B)
 
-Новое здесь одно слово — `ИНДЕКСИРОВАТЬ ПО`.
+Новое здесь одно слово — `ИНДЕКСИРОВАТЬ ПО`. Индекс — то, что по-русски
+удобнее звать указателем; в книге дальше так и будет, а в языке запросов и в
+конфигураторе он остаётся индексом.
 
 ## Зачем таблице указатель
 
@@ -149,3 +151,5 @@ status: review
 
 **Найдите пропущенный.** Возьмите чужой пакет с временной таблицей и скажите,
 не пропущен ли в нём указатель — и по какому полю.
+
+Ответы — в конце части.

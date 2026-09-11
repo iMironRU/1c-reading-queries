@@ -27,19 +27,20 @@ status: review
 
 [▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_52RSwrCQBBE954iB5DcwLtpBF1koQYHQ8T42eoiCMEQNWd4fSMrChowojgwNN3TVV1dQ8SeGRum7Dh0PB0lORlnCk5kNqKwic-Kigu59buPpq0F1letVNsbgMIXXcVR6c-ARI8q2VhTBhYIXHWIWTzg8xpqw1oDVwv8NpWvmXX0xDglad3nznnnXeKISHFSWAcNirWs041xz74_NTRssPAp6IsVL3Fr0g_fsZVFoYolmdf7wdxG_w1MMtEY8wEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F03_svyazi%2F03-06_chtenie_svyazannogo.html&title=%C2%A7+3.6.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D1%81%D0%B2%D1%8F%D0%B7%D0%B0%D0%BD%D0%BD%D0%BE%D0%B3%D0%BE+%D1%80%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%D0%B0+%D0%B2+%D0%BA%D0%BE%D0%BD%D1%81%D0%BE%D0%BB%D0%B8)
 
-Документов сто. Строк в ответе — не сто, а столько, сколько всего товарных строк
-во всех этих документах: у одного документа их три, у другого семь.
+Документов пять. Строк в ответе — не пять, а шесть: столько, сколько всего
+товарных строк во всех этих документах. У одного документа их две, у прочих по
+одной.
 
 ```текст
   Номер   Товар             Количество
   ────────────────────────────────────
-  47      Бумага А4                 10
-  47      Ручка шариковая           50
-  47      Папка                      5
-  48      Бумага А4                 20
+  47      Бумага А4                200
+  47      Ручка шариковая          100
+  51      Бумага А4                100
+  52      Ручка гелевая             60
 ```
 
-Номер `47` повторился трижды. Это не ошибка и не дубли: **соединение размножает
+Номер `47` повторился дважды. Это не ошибка и не дубли: **соединение размножает
 строку главной таблицы по числу найденных пар.**
 
 ## Правило числа строк

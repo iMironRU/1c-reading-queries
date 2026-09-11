@@ -27,16 +27,16 @@ status: review
 
 [▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_2WQSw6CQBBE95yCAxhu4N3UxLhg4ScSDQYUt7ogKMlk_F3hzY0shgRFZ1ND87q6elhxYsmBBUfOQaijy5OK0o1cHJFRYrhT82jLUkM9aNHcjd1E6ASLiUiF3DBuRu1_VPr-IE9swJZN21rwciPZiRHfmNroe3QotwVpL47v9N07ElbkJI2RhLWcM2kmTTrOsweFvyiVcmhis5CV5UtJm6WMm_fmeqAQcpNeVZtG_TW7YL3qJ9qe_OcNC4Gx_CxlOPx7tA59A6q3sIeMAQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F03_svyazi%2F03-05_levoe_soedinenie.html&title=%C2%A7+3.5.+%D0%9B%D0%B5%D0%B2%D0%BE%D0%B5+%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B8+%D0%BF%D1%83%D1%81%D1%82%D1%8B%D0%B5+%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F)
 
-Товаров восемьсот, остатки есть у шестисот. Двести строк останутся, потому что
-соединение левое, — но колонка `КоличествоОстаток` у них заполниться не может:
-брать нечего.
+В учебной базе шесть товаров и три группы, а остатки есть только у четырёх
+товаров. Остальные строки останутся, потому что соединение левое, — но колонка
+`КоличествоОстаток` у них заполниться не может: брать нечего.
 
 ```текст
   Наименование      Остаток
   ─────────────────────────
-  Бумага А4             120
-  Ручка шариковая        45
-  Папка архивная       NULL  ← пары нет
+  Бумага А4             200
+  Ручка шариковая       300
+  Бумага А3            NULL  ← пары нет
 ```
 
 Такое значение называется `NULL`. По-русски точнее всего сказать «значения нет
@@ -56,7 +56,7 @@ status: review
 Незаполненный контрагент в документе — именно она. А `NULL` в поле контрагента
 означало бы, что документа с таким полем в ответе вообще не нашлось.
 
-Обещание из главы про чтение ответа выполнено: различие действительно дало себя
+Обещание из разговора о чтении ответа выполнено: различие действительно дало себя
 знать здесь.
 
 ## Чем `NULL` опасен

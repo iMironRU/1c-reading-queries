@@ -41,13 +41,13 @@ status: review
 ```текст
   было в источнике          стало в ответе
   ──────────────────        ──────────────
-  47  Бумага А4    10
-  48  Бумага А4    20   →   Бумага А4   35
-  51  Бумага А4     5
-  47  Ручка         50  →   Ручка       50
+  47  Бумага А4   200
+  51  Бумага А4   100   →   Бумага А4  300
+  47  Ручка       100
+  59  Ручка        10   →   Ручка      110
 ```
 
-Три строки с бумагой схлопнулись в одну, а количества сложились. Это и есть
+Две строки с бумагой схлопнулись в одну, а количества сложились. Это и есть
 свёртка: одна строка ответа на каждое **различное значение** того, по чему
 свернули.
 
@@ -68,21 +68,23 @@ status: review
 ИТОГИ
     СУММА(Количество)
 ПО
+    ОБЩИЕ,
     Товар
 ```
 
-[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_42OywrCQAxF9_MVXSpIv7GOoAsX1gdYilStS10UoVh89BtO_shbKioo6GSRZJKTe5mxZ8qGmJyDC_TYmreImjOVBiUFF1UnChsqV6E2a45qo96fQKqhvmxEaX3zgmtHwrLFFw1qA65Cb-bDzxs2eWk2-c2CjQOdj0l_2mgUczLmJA_b7Fgp4s43g13HmqzdfKrdASHneI8vAQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-01_chtenie_s_itogami.html&title=%C2%A7+4.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D1%81+%D0%B8%D1%82%D0%BE%D0%B3%D0%B0%D0%BC%D0%B8)
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_42QzQqCUBCF9z6Fy4LwGc2gFi2yPxIJK1uFLSSQpB-f4Zs36ohSQUHdu5i5d-abc-5lRsaULSEpR8fVYmeB-VRcKFUoyLkqO5PbULH01Flx0tHv_QnEKurKRhTWt0Bw5RCxavBFjdqAm9C7Bd7nDJu8NOv4ZsHGrsaHxD9t1IopCXOi1jZ71tph55vBrsOGpOlM9EUH4cv2wU_1B3Oyi9s_AQAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F04_svyortka%2F04-01_chtenie_s_itogami.html&title=%C2%A7+4.1.+%D0%A7%D1%82%D0%B5%D0%BD%D0%B8%D0%B5+%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%B0+%D1%81+%D0%B8%D1%82%D0%BE%D0%B3%D0%B0%D0%BC%D0%B8)
 
 Ответ перестаёт быть таблицей.
 
 ```текст
-  Итого                      85
-    ▼ Бумага А4              35
-        47  Бумага А4        10
-        48  Бумага А4        20
-        51  Бумага А4         5
-    ▼ Ручка шариковая        50
-        47  Ручка шариковая  50
+  Итого                     520
+    ▼ Бумага А4             300
+        47  Бумага А4       200
+        51  Бумага А4       100
+    ▼ Ручка шариковая       110
+        47  Ручка шариковая 100
+        59  Ручка шариковая  10
+    …
 ```
 
 Ответ стал деревом: **в корне общий итог, под ним итоги по товарам, под каждым —
