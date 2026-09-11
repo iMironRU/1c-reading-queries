@@ -18,7 +18,7 @@ status: review
         КАК Остатки
 ```
 
-[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22PTQrCMBhE9z1FVqJQegPvVgVx4cKfjRJQqltdlNpAaTFe4eVGDnERFQMhzLz5Mgk7rmyp2HDhlhktTmEW5tTaPV0h39NIlvlfbIUHurDERdBIp4inzziwf49WOO7KioaSI7Wu8Dw173jIX3-0hVUMnBUZdLbyFsV3-Tg3iZupGSU1iYWx1Opv9ufZL2ELj033AAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F09_kak_vypolnyaetsya_zapros%2F09-05_parametr_bystree_uslovia.html&title=%C2%A7+9.5.+%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83+%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80+%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B5%D0%B5+%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F)
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22PTQrCMBhE9z1FVqJQegPvVgVx4cKfjRJQqltdlNpAaTFe4eVGDnERFQMhzLz5Mgk7rmyp2HDhlhktTmEW5tTaPV0h39NIlvlfbIUHurDERdBIp4inzziwf49WOO7KioaSI7Wu8Dw173jIX3-0hVUMnBUZdLbyFsV3-Tg3iZupGSU1iYWx1Opv9ufZL2ELj033AAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&p.%D0%A1%D0%BA%D0%BB%D0%B0%D0%B4=r%3A%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA.%D0%A1%D0%BA%D0%BB%D0%B0%D0%B4%D1%8B%3Aw_main&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F09_kak_vypolnyaetsya_zapros%2F09-05_parametr_bystree_uslovia.html&title=%C2%A7+9.5.+%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83+%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80+%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B5%D0%B5+%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F)
 
 ```запрос,песочница
 ВЫБРАТЬ
@@ -30,10 +30,7 @@ status: review
     Остатки.Склад = &Склад
 ```
 
-[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22OPQrCQBCF-z3FVlaSG3i3RBALC6NGlIASbbUI0YWQ4HqFb2_kI4JRycAwvJ-ZN6y5sKIg5czVWBXHkIQppbqhjsR7KsF4PCjnklvqMMd1QiXcWzyNYc_uvVrguMkrNcQcKHXC89S-4yF--ZUWFp3hJEureRc3i37DrcJT8r-XDBsytoPPfq7ZiR316AVLeS0zBgEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F09_kak_vypolnyaetsya_zapros%2F09-05_parametr_bystree_uslovia.html&title=%C2%A7+9.5.+%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83+%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80+%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B5%D0%B5+%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F)
-
-Открыв любой из них в песочнице, задайте значение `&Склад` в панели параметров —
-иначе отбирать будет не по чему, и ответ придёт пустым.
+[▶ Выполнить в песочнице](https://imiron.ru/BSLexicon/query/?gzq=H4sIAAAAAAAC_22OPQrCQBCF-z3FVlaSG3i3RBALC6NGlIASbbUI0YWQ4HqFb2_kI4JRycAwvJ-ZN6y5sKIg5czVWBXHkIQppbqhjsR7KsF4PCjnklvqMMd1QiXcWzyNYc_uvVrguMkrNcQcKHXC89S-4yF--ZUWFp3hJEureRc3i37DrcJT8r-XDBsytoPPfq7ZiR316AVLeS0zBgEAAA&schema-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.schema.yaml&data-src=https%3A%2F%2Fraw.githubusercontent.com%2FiMironRU%2F1c-reading-queries%2Fmain%2Fassets%2Fsandbox%2Fkanctovary.data.yaml&p.%D0%A1%D0%BA%D0%BB%D0%B0%D0%B4=r%3A%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA.%D0%A1%D0%BA%D0%BB%D0%B0%D0%B4%D1%8B%3Aw_main&source=https%3A%2F%2Fimiron.ru%2F1c-reading-queries%2Fchapters%2F09_kak_vypolnyaetsya_zapros%2F09-05_parametr_bystree_uslovia.html&title=%C2%A7+9.5.+%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83+%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80+%D0%B1%D1%8B%D1%81%D1%82%D1%80%D0%B5%D0%B5+%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8F)
 
 ## Где задаётся объём
 

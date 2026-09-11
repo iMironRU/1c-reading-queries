@@ -16,6 +16,14 @@
       url: "https://imiron.ru/BSLexicon/query/"
       schema_src: "https://raw.githubusercontent.com/…/base.schema.yaml"
       data_src:   "https://raw.githubusercontent.com/…/base.data.yaml"
+
+Значения параметров — в assets/sandbox/parameters.yaml, по строке на имя:
+
+    НаДату: "d:2026-04-30T23:59:59"
+    Склад:  "r:Справочник.Склады:w_main"
+
+Если запрос содержит «&Имя», а значение для него задано, ссылка несёт его
+параметром p.Имя — песочница откроется с уже заполненной панелью.
 """
 import base64
 import glob
@@ -24,6 +32,9 @@ import os
 import re
 import sys
 import urllib.parse
+
+PARAMS_FILE = "assets/sandbox/parameters.yaml"
+PARAM_IN_QUERY = re.compile(r"&([^\W\d]\w*)")
 
 FENCE = re.compile(r"^```запрос,песочница\n(.*?)^```[ \t]*$", re.S | re.M)
 LINK_LINE = re.compile(r"^\[▶ [^\]]*\]\(([^)]*)\)[ \t]*$", re.M)
@@ -47,6 +58,31 @@ def read_meta(path="metadata.yaml"):
     return meta
 
 
+def read_params(path=PARAMS_FILE):
+    """Плоский «Имя: "значение"» без PyYAML."""
+    if not os.path.exists(path):
+        return {}
+    out = {}
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if not line or line.startswith("#") or ":" not in line:
+            continue
+        key, _, value = line.partition(":")
+        out[key.strip()] = value.strip().strip('"')
+    return out
+
+
+def query_params(query, defaults):
+    """Пары p.Имя=значение для параметров, встретившихся в запросе, по порядку."""
+    seen, pairs = set(), []
+    for name in PARAM_IN_QUERY.findall(query):
+        if name in seen or name not in defaults:
+            continue
+        seen.add(name)
+        pairs.append((f"p.{name}", defaults[name]))
+    return pairs
+
+
 def encode(query):
     packed = gzip.compress(query.encode("utf-8"), mtime=0)
     return base64.b64encode(packed).decode().replace("+", "-").replace("/", "_").rstrip("=")
@@ -64,7 +100,7 @@ def decode(gzq):
         return None
 
 
-def same_link(existing, query, meta, title, source):
+def same_link(existing, query, meta, title, source, defaults=None):
     """Ведёт ли уже стоящая ссылка туда же, куда повела бы новая."""
     try:
         parts = urllib.parse.urlsplit(existing)
@@ -79,6 +115,10 @@ def same_link(existing, query, meta, title, source):
     for key, name in (("sandbox.schema_src", "schema-src"), ("sandbox.data_src", "data-src")):
         if params.get(name, "") != (meta.get(key) or ""):
             return False
+    want = dict(query_params(query, defaults or {}))
+    have = {k: v for k, v in params.items() if k.startswith("p.")}
+    if want != have:
+        return False
     return params.get("source", "") == (source or "") and params.get("title", "") == (title or "")
 
 
@@ -90,20 +130,21 @@ def page_url(site_url, path):
     return site_url.rstrip("/") + "/" + rel.replace(os.sep, "/")
 
 
-def build_link(meta, query, title, source):
-    params = {"gzq": encode(query)}
+def build_link(meta, query, title, source, defaults=None):
+    params = [("gzq", encode(query))]
     for key, name in (("sandbox.schema_src", "schema-src"), ("sandbox.data_src", "data-src")):
         if meta.get(key):
-            params[name] = meta[key]
+            params.append((name, meta[key]))
+    params += query_params(query, defaults or {})
     if source:
-        params["source"] = source
+        params.append(("source", source))
     if title:
-        params["title"] = title
+        params.append(("title", title))
     base = meta.get("sandbox.url", "https://imiron.ru/BSLexicon/query/")
     return f"[{LABEL}]({base}?{urllib.parse.urlencode(params)})"
 
 
-def process(path, meta, check):
+def process(path, meta, check, defaults):
     raw = open(path, encoding="utf-8").read()
     title = next(iter(re.findall(r"^# (.+)$", raw, re.M)), None)
     source = page_url(meta.get("site_url"), path)
@@ -112,13 +153,13 @@ def process(path, meta, check):
     for m in FENCE.finditer(raw):
         out.append(raw[pos:m.end()])
         pos = m.end()
-        link = build_link(meta, m.group(1).strip(), title, source)
+        link = build_link(meta, m.group(1).strip(), title, source, defaults)
 
         tail = raw[pos:]
         existing = LINK_LINE.match(tail.lstrip("\n"))
         if existing:
             skip = len(tail) - len(tail.lstrip("\n")) + existing.end()
-            if same_link(existing.group(1), m.group(1).strip(), meta, title, source):
+            if same_link(existing.group(1), m.group(1).strip(), meta, title, source, defaults):
                 out.append(tail[:skip])
                 pos += skip
                 continue
@@ -142,9 +183,10 @@ def main():
         print("В metadata.yaml нет раздела sandbox — ссылки не ставлю.")
         return 0
 
+    defaults = read_params()
     total = 0
     for path in sorted(glob.glob("chapters/*/*.md")):
-        total += process(path, meta, check)
+        total += process(path, meta, check, defaults)
 
     if check and total:
         print(f"Ссылки в песочницу разошлись с запросами: {total}. Выполните ./book.sh sandbox-links")
