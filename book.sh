@@ -443,6 +443,12 @@ print(m.group(1) if m else 'ready')
         done
         # Титульная страница повторяет обложку: при обложке она лишняя.
         [[ -f assets/img/cover.png ]] && epub_flags+=(--epub-title-page=false)
+        # Постоянный идентификатор: pandoc по умолчанию ставит случайный UUID, и
+        # читалка («Книги» на iPhone и другие) видит каждое обновление как новую
+        # книгу — рядом со старой. UUID из имени книги одинаков в каждой сборке.
+        local epub_id
+        epub_id=$(python3 -c "import uuid,sys; print(uuid.uuid5(uuid.NAMESPACE_URL, 'https://github.com/iMironRU/' + sys.argv[1]))" "$slug")
+        epub_flags+=(--metadata="identifier:urn:uuid:${epub_id}")
         pandoc "${file_list[@]}" "${epub_flags[@]}" ${epub_css[@]+"${epub_css[@]}"} -o "${base}.epub"
         success "→ ${base}.epub"
     fi
