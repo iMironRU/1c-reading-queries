@@ -399,6 +399,21 @@ print(m.group(1) if m else 'ready')
 
     info "Собирается ${#file_list[@]} глав..."
 
+    # Места для снимков — видимой заглушкой: в черновике читатель должен
+    # видеть, что здесь будет картинка. Правим копии, оригиналы не трогаем.
+    if [[ -f scripts/shot-slots.py ]]; then
+        rm -rf .build-src
+        local staged=()
+        local f
+        for f in "${file_list[@]}"; do
+            mkdir -p ".build-src/$(dirname "$f")"
+            cp "$f" ".build-src/$f"
+            staged+=(".build-src/$f")
+        done
+        python3 scripts/shot-slots.py .build-src >/dev/null || true
+        file_list=("${staged[@]}")
+    fi
+
     local rev="${version}"
     local base="dist/${slug}_v${rev}"
 
@@ -543,6 +558,7 @@ print(m.group(1) if m else 'ready')
     fi
 
     echo ""
+    rm -rf .build-src
     success "Сборка завершена. Файлы в dist/"
 }
 
@@ -623,6 +639,10 @@ for f in glob.glob(f"{stage}/chapters/*/*.md") + glob.glob(f"{stage}/*.md"):
     if s != t:
         open(f, "w", encoding="utf-8").write(s)
 PYFM
+
+    if [[ -f scripts/shot-slots.py ]]; then
+        python3 scripts/shot-slots.py "$stage" >/dev/null || true
+    fi
 
     # book.toml для стенда: тот же, но src — стенд, а вывод — в book/ репозитория
     python3 - "$stage" <<'PYSITE'

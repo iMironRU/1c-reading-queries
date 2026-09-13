@@ -167,3 +167,88 @@ p {
     orphans: 2;
     widows: 2;
 }
+
+/* Место для снимка экрана: картинки ещё нет, на её месте — скелет окна.
+   Разметка без флексов: часть читалок их игнорирует. */
+.shot-slot {
+    display: block;
+    margin: 1.4em 0;
+}
+
+.shot-skeleton {
+    border: 1px solid #bbb;
+    background: #f6f6f4;
+    padding: 0 0 0.6em;
+}
+
+.shot-titlebar {
+    height: 1.1em;
+    background: #e0e0dc;
+    border-bottom: 1px solid #c8c8c4;
+}
+
+.shot-toolbar {
+    padding: 0.35em 0.7em;
+    border-bottom: 1px solid #dcdcd8;
+    margin-bottom: 0.7em;
+}
+
+.shot-chip {
+    display: inline-block;
+    width: 1.6em;
+    height: 0.5em;
+    margin-right: 0.4em;
+    background: #d4d4d0;
+}
+
+.shot-chip.wide { width: 3.2em; }
+
+.shot-body {
+    padding: 0 0.7em;
+}
+
+.shot-tree,
+.shot-pane {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.shot-tree { width: 32%; padding-right: 3%; }
+.shot-pane { width: 64%; }
+
+.shot-line {
+    height: 0.5em;
+    margin: 0 0 0.55em;
+    background: #d8d8d4;
+}
+
+.shot-field {
+    height: 1em;
+    margin: 0 0 0.6em;
+    background: #fff;
+    border: 1px solid #d0d0cc;
+}
+
+.shot-line.w80 { width: 80%; }
+.shot-line.w70 { width: 70%; }
+.shot-line.w65 { width: 65%; }
+.shot-line.w60 { width: 60%; }
+.shot-line.w55 { width: 55%; }
+.shot-line.w50 { width: 50%; }
+.shot-line.w45 { width: 45%; }
+.shot-line.w40 { width: 40%; }
+
+.shot-slot-label {
+    display: block;
+    margin-top: 0.5em;
+    font-size: 0.76em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #777;
+}
+
+.shot-slot-text {
+    display: block;
+    font-size: 0.9em;
+    color: #444;
+}

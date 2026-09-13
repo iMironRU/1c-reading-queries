@@ -425,10 +425,20 @@ def check_file(path, cfg):
 
     if sev("comment") != "off":
         raw_lines = raw.split("\n")
-        for i, line in enumerate(raw_lines[:-1], 1):
+        for i, line in enumerate(raw_lines, 1):
             if not (line.lstrip().startswith("<!--") and line.rstrip().endswith("-->")):
                 continue
-            nxt = raw_lines[i]
+            prev = raw_lines[i - 2] if i >= 2 else ""
+            nxt = raw_lines[i] if i < len(raw_lines) else ""
+            # Пустая строка нужна с обеих сторон. Без неё markdown считает
+            # комментарий продолжением соседнего блока: снизу — втягивает
+            # следующую строку, сверху — прилипает к таблице или абзацу, и
+            # тогда pandoc печатает комментарий читателю как обычный текст.
+            if prev.strip() and not prev.lstrip().startswith("<!--"):
+                findings.append((sev("comment"), path, i, 1, "comment",
+                                 "перед комментарием нет пустой строки — он прилипнет "
+                                 "к предыдущему блоку, и в EPUB текст комментария "
+                                 "напечатается читателю"))
             if nxt.strip() and not nxt.lstrip().startswith("<!--"):
                 findings.append((sev("comment"), path, i, 1, "comment",
                                  "после комментария нет пустой строки — markdown втянет "
