@@ -11,6 +11,16 @@
         return document.querySelector(selector);
     }
 
+    // Открыто ли меню: в свежем mdBook об этом говорит класс на <html>,
+    // в прежнем — только скрытый флажок, которым управляет кнопка.
+    function isOpen() {
+        var anchor = pick('#mdbook-sidebar-toggle-anchor, #sidebar-toggle-anchor');
+        if (anchor) {
+            return anchor.checked;
+        }
+        return document.documentElement.classList.contains('sidebar-visible');
+    }
+
     function hide() {
         var anchor = pick('#mdbook-sidebar-toggle-anchor, #sidebar-toggle-anchor');
         if (anchor && anchor.checked) {
@@ -37,7 +47,7 @@
             if (window.innerWidth >= NARROW) {
                 return;
             }
-            if (!document.documentElement.classList.contains('sidebar-visible')) {
+            if (!isOpen()) {
                 return;
             }
             if (sidebar.contains(event.target)) {
