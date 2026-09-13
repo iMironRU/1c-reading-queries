@@ -9,7 +9,11 @@
 Пометки для стенда (`FIXME стенд`) остаются невидимыми — это записка автору,
 а не пропущенная иллюстрация.
 
-Запуск: python3 scripts/shot-slots.py <каталог> [ещё каталоги]
+Скелет — разметкой, и она доживает до сайта, EPUB и HTML. Форматы, которые
+html не понимают (FB2, DOCX, PDF), получают ту же заглушку строкой: флаг
+`--plain`. Пустого места на странице не остаётся нигде.
+
+Запуск: python3 scripts/shot-slots.py [--plain] <каталог> [ещё каталоги]
 Файлы правятся на месте, поэтому запускать только на копии для сборки.
 """
 
@@ -58,25 +62,33 @@ def slot(match):
     )
 
 
-def convert(path):
+def slot_plain(match):
+    """Для форматов без html: заглушка обычной цитатой, но с той же подписью."""
+    text = " ".join(match.group(1).split())
+    return "> **Здесь будет снимок экрана.** " + text
+
+
+def convert(path, plain=False):
     src = open(path, encoding="utf-8").read()
-    out, count = SHOT.subn(slot, src)
+    out, count = SHOT.subn(slot_plain if plain else slot, src)
     if count:
         open(path, "w", encoding="utf-8").write(out)
     return count
 
 
 def main():
-    roots = sys.argv[1:] or ["."]
+    args = sys.argv[1:]
+    plain = "--plain" in args
+    roots = [a for a in args if a != "--plain"] or ["."]
     total = 0
     for root in roots:
         if os.path.isfile(root):
-            total += convert(root)
+            total += convert(root, plain)
             continue
         for base, _dirs, files in os.walk(root):
             for name in sorted(files):
                 if name.endswith(".md"):
-                    total += convert(os.path.join(base, name))
+                    total += convert(os.path.join(base, name), plain)
     print(f"Заглушек под снимки: {total}")
     return 0
 

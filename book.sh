@@ -401,17 +401,24 @@ print(m.group(1) if m else 'ready')
 
     # Места для снимков — видимой заглушкой: в черновике читатель должен
     # видеть, что здесь будет картинка. Правим копии, оригиналы не трогаем.
+    # Копии две: html-форматы получают скелет разметкой, остальные — строку,
+    # потому что raw html в FB2, DOCX и PDF молча пропадает.
+    local plain_list=()
     if [[ -f scripts/shot-slots.py ]]; then
         rm -rf .build-src
-        local staged=()
-        local f
+        local staged=() f
         for f in "${file_list[@]}"; do
-            mkdir -p ".build-src/$(dirname "$f")"
-            cp "$f" ".build-src/$f"
-            staged+=(".build-src/$f")
+            mkdir -p ".build-src/html/$(dirname "$f")" ".build-src/plain/$(dirname "$f")"
+            cp "$f" ".build-src/html/$f"
+            cp "$f" ".build-src/plain/$f"
+            staged+=(".build-src/html/$f")
+            plain_list+=(".build-src/plain/$f")
         done
-        python3 scripts/shot-slots.py .build-src >/dev/null || true
+        python3 scripts/shot-slots.py .build-src/html >/dev/null || true
+        python3 scripts/shot-slots.py --plain .build-src/plain >/dev/null || true
         file_list=("${staged[@]}")
+    else
+        plain_list=("${file_list[@]}")
     fi
 
     local rev="${version}"
@@ -471,7 +478,7 @@ print(m.group(1) if m else 'ready')
     # FB2
     if [[ "$(fmt fb2)" == "True" || "$(fmt fb2)" == "true" ]]; then
         info "FB2..."
-        pandoc "${file_list[@]}" --metadata-file=metadata.yaml --strip-comments --toc -o "${base}.fb2"
+        pandoc "${plain_list[@]}" --metadata-file=metadata.yaml --strip-comments --toc -o "${base}.fb2"
         success "→ ${base}.fb2"
     fi
 
@@ -486,7 +493,7 @@ print(m.group(1) if m else 'ready')
     # DOCX
     if [[ "$(fmt docx)" == "True" || "$(fmt docx)" == "true" ]]; then
         info "DOCX..."
-        pandoc "${file_list[@]}" "${pandoc_flags[@]}" -o "${base}.docx"
+        pandoc "${plain_list[@]}" "${pandoc_flags[@]}" -o "${base}.docx"
         success "→ ${base}.docx"
     fi
 
@@ -495,7 +502,7 @@ print(m.group(1) if m else 'ready')
         if command -v xelatex &>/dev/null; then
             info "PDF A5..."
             local margin; margin=$(read_meta 'pdf.margin_a5')
-            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
+            if pandoc "${plain_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
                 -V papersize=a5 \
                 -V "geometry:${margin}" \
                 -V mainfont="$(read_meta 'pdf.font_main')" \
@@ -517,7 +524,7 @@ print(m.group(1) if m else 'ready')
         if command -v xelatex &>/dev/null; then
             info "PDF A4..."
             local margin_a4; margin_a4=$(read_meta 'pdf.margin_a4')
-            if pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
+            if pandoc "${plain_list[@]}" "${pandoc_flags[@]}" "${pdf_header[@]}" \
                 -V papersize=a4 \
                 -V "geometry:${margin_a4}" \
                 -V mainfont="$(read_meta 'pdf.font_main')" \
@@ -539,7 +546,7 @@ print(m.group(1) if m else 'ready')
         info "DOCX A4..."
         local ref_arg=()
         [[ -f assets/print/reference-a4.docx ]] && ref_arg=(--reference-doc=assets/print/reference-a4.docx)
-        pandoc "${file_list[@]}" "${pandoc_flags[@]}" "${ref_arg[@]}" -o "${base}_a4.docx"
+        pandoc "${plain_list[@]}" "${pandoc_flags[@]}" "${ref_arg[@]}" -o "${base}_a4.docx"
         success "→ ${base}_a4.docx"
     fi
 
@@ -1054,6 +1061,23 @@ PY
 }
 
 # ─── LINT ────────────────────────────────────────────────────────────────────
+cmd_read() {
+    # Исходник параграфа читать неудобно: служебные пометки просмотрщик
+    # показывает как текст и склеивает со следующим абзацем. Копия для чтения
+    # выносит их из текста.
+    if [[ ! -f scripts/reading-copy.py ]]; then
+        error "scripts/reading-copy.py не найден. Запустите: ./book.sh sync"
+        exit 1
+    fi
+    if [[ $# -eq 0 ]]; then
+        error "Укажите параграф: ./book.sh read chapters/02_anatomiya/02-03_*.md"
+        exit 1
+    fi
+    header "Копия для чтения"
+    echo ""
+    python3 scripts/reading-copy.py "$@"
+}
+
 cmd_lint() {
     local args=("$@")
     if [[ ! -f scripts/style-lint.py ]]; then
@@ -1098,6 +1122,7 @@ show_help() {
     echo -e "    ${CYAN}status${RESET}            Показать прогресс по главам"
     echo -e "    ${CYAN}build [фильтр]${RESET}    Собрать форматы (ready | review | all)"
     echo -e "    ${CYAN}lint [пути]${RESET}       Проверить стиль по канону (docs/style-guide.md)"
+    echo -e "    ${CYAN}read <файлы>${RESET}      Копия параграфа для чтения (пометки — списком в конце)"
     echo -e "    ${CYAN}summary${RESET}           Перегенерировать SUMMARY.md"
     echo -e "    ${CYAN}sandbox-links${RESET}     Обновить ссылки в песочницу под блоками «запрос,песочница»"
     echo -e "    ${CYAN}tasks${RESET}             Собрать tasks/*.yaml в tasks.json (задачи BSLexicon)"
@@ -1148,6 +1173,7 @@ case "$COMMAND" in
     status)  cmd_status ;;
     build)   cmd_build "${1:-all}" ;;
     lint)    cmd_lint "$@" ;;
+    read)    cmd_read "$@" ;;
     sandbox-links) cmd_sandbox_links "$@" ;;
     summary) check_metadata; _generate_summary "${1:-all}"; success "→ SUMMARY.md" ;;
     tasks)   check_metadata; cmd_tasks "$@" ;;
