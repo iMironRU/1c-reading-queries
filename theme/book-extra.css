@@ -42,9 +42,6 @@
 
 /* ─── Нумерация глав в основном тексте (H1 = § параграфа) ─────────────────── */
 /* mdBook сам нумерует сайдбар; здесь — мягкая визуальная иерархия заголовков */
-.content h1 { font-size: 1.9rem; margin-top: 0; }
-.content h2 { font-size: 1.45rem; margin-top: 2rem; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 0.2rem; }
-.content h3 { font-size: 1.18rem; margin-top: 1.5rem; }
 
 /* Длинный код не должен ломать вёрстку на узких экранах */
 .content pre > code { white-space: pre; overflow-x: auto; }
@@ -159,10 +156,6 @@
 .content table td {
     vertical-align: top;
     padding: 0.4em 0.6em;
-}
-
-.content table td:first-child {
-    width: 38%;
 }
 
 /* ─── Боковая панель: дерево глав ──────────────────────────────────────────

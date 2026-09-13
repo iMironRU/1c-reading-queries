@@ -1,0 +1,307 @@
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ─── Палитра серии ───────────────────────────────────────────────────────
+   Сайт книги выглядит так же, как песочница BSLexicon: один дом — один вид.
+   Переменные mdBook переопределены для всех тем, чтобы переключатель тем не
+   ломал вид: книга всегда тёмная, как редактор кода. */
+
+html,
+html.light,
+html.rust,
+html.coal,
+html.navy,
+html.ayu {
+    --bsl-bg: #0e0f13;
+    --bsl-panel: #16181f;
+    --bsl-panel-2: #1c1f27;
+    --bsl-border: #262932;
+    --bsl-border-hi: #3a3e49;
+    --bsl-text: #e6e7ea;
+    --bsl-muted: #7a7d87;
+    --bsl-dim: #4a4d55;
+    --bsl-teal: #4ec9b0;
+    --bsl-teal-dark: #2f8f7c;
+    --bsl-yellow: #dcdcaa;
+    --bsl-blue: #9cdcfe;
+    --bsl-orange: #ce9178;
+
+    --bg: var(--bsl-bg);
+    --fg: var(--bsl-text);
+
+    --sidebar-bg: var(--bsl-panel);
+    --sidebar-fg: var(--bsl-text);
+    --sidebar-non-existant: var(--bsl-dim);
+    --sidebar-active: var(--bsl-teal);
+    --sidebar-spacer: var(--bsl-border);
+
+    --scrollbar: var(--bsl-border-hi);
+    --icons: var(--bsl-muted);
+    --icons-hover: var(--bsl-text);
+    --links: var(--bsl-teal);
+    --inline-code-color: var(--bsl-orange);
+
+    --theme-popup-bg: var(--bsl-panel);
+    --theme-popup-border: var(--bsl-border);
+    --theme-hover: var(--bsl-panel-2);
+
+    --quote-bg: var(--bsl-panel);
+    --quote-border: var(--bsl-teal-dark);
+
+    --table-border-color: var(--bsl-border);
+    --table-header-bg: var(--bsl-panel-2);
+    --table-alternate-bg: var(--bsl-panel);
+
+    --searchbar-border-color: var(--bsl-border);
+    --searchbar-bg: var(--bsl-panel);
+    --searchbar-fg: var(--bsl-text);
+    --searchbar-shadow-color: transparent;
+    --searchresults-header-fg: var(--bsl-muted);
+    --searchresults-border-color: var(--bsl-border);
+    --searchresults-li-bg: var(--bsl-panel);
+    --search-mark-bg: rgba(78, 201, 176, 0.28);
+
+    --warning-border: var(--bsl-yellow);
+
+    color-scheme: dark;
+}
+
+/* ─── Шрифты ──────────────────────────────────────────────────────────── */
+
+html {
+    font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+code,
+pre,
+kbd,
+samp,
+.hljs {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.content {
+    font-size: 16.5px;
+    line-height: 1.62;
+}
+
+.content main {
+    max-width: 46em;
+}
+
+/* ─── Заголовки ───────────────────────────────────────────────────────── */
+
+.content h1,
+.content h2,
+.content h3,
+.content h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+/* Внимание: mdBook задаёт корневой шрифт в 62,5 %, поэтому 1rem здесь — это
+ * 10 пикселей, а не 16. Размеры заголовков считаем от текста: em надёжнее. */
+.content h1 {
+    font-size: 2em !important;
+    line-height: 1.15;
+    color: var(--bsl-text);
+    margin-top: 0;
+}
+
+.content h2 {
+    font-size: 1.42em !important;
+    color: var(--bsl-text);
+    border-bottom: 1px solid var(--bsl-border);
+    padding-bottom: 0.3em;
+    margin-top: 2.2em;
+}
+
+.content h3 {
+    font-size: 1.15em !important;
+    color: var(--bsl-text);
+    margin-top: 1.6em;
+}
+
+/* ─── Код и схемы ─────────────────────────────────────────────────────── */
+
+.content pre {
+    background: var(--bsl-panel-2);
+    border: 1px solid var(--bsl-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.82em;
+    line-height: 1.5;
+}
+
+.content pre > code,
+.content pre code.hljs {
+    background: transparent;
+    padding: 0;
+}
+
+.content code {
+    background: var(--bsl-panel-2);
+    border: 1px solid var(--bsl-border);
+    border-radius: 4px;
+    padding: 0.05em 0.35em;
+    font-size: 0.88em;
+}
+
+.content pre > code {
+    border: none;
+}
+
+/* ─── Выноски-цитаты ──────────────────────────────────────────────────── */
+
+.content blockquote {
+    background: var(--bsl-panel);
+    border-left: 3px solid var(--bsl-teal);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 0 8px 8px 0;
+    color: var(--bsl-text);
+    padding: 0.85em 1.1em;
+    margin: 1.4em 0;
+}
+
+/* ─── Таблицы ─────────────────────────────────────────────────────────── */
+
+.content table {
+    border: 1px solid var(--bsl-border);
+    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+.content table th {
+    background: var(--bsl-panel-2);
+    color: var(--bsl-muted);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 0.72em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--bsl-border);
+}
+
+.content table tbody tr:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.content table td {
+    border-top: 1px solid var(--bsl-border);
+}
+
+/* ─── Боковая панель ──────────────────────────────────────────────────── */
+
+.sidebar {
+    border-right: 1px solid var(--bsl-border);
+}
+
+.chapter li.chapter-item a:hover {
+    color: var(--bsl-teal);
+}
+
+#menu-bar {
+    background: var(--bsl-bg);
+    border-bottom: 1px solid var(--bsl-border);
+}
+
+/* ─── Ссылки ──────────────────────────────────────────────────────────── */
+
+.content p a,
+.content li a,
+.content td a,
+.content blockquote a {
+    color: var(--bsl-teal);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--bsl-teal-dark);
+}
+
+.content p a:hover,
+.content li a:hover,
+.content td a:hover,
+.content blockquote a:hover {
+    border-bottom-style: solid;
+}
+
+/* Заголовок — это заголовок, даже когда mdBook делает из него якорь. */
+.content h1 a,
+.content h2 a,
+.content h3 a,
+.content h4 a,
+.content a.header {
+    color: inherit;
+    border-bottom: none;
+    text-decoration: none;
+}
+
+.content a.header:hover {
+    color: var(--bsl-teal);
+}
+
+/* ─── Плашки состояния ────────────────────────────────────────────────── */
+
+.book-status--wip {
+    border-color: var(--bsl-yellow);
+    background: rgba(220, 220, 170, 0.08);
+    color: var(--bsl-text);
+}
+
+.book-status--stub {
+    border-color: var(--bsl-dim);
+    background: rgba(122, 125, 135, 0.12);
+    color: var(--bsl-text);
+}
+
+.draft-banner {
+    background: rgba(220, 220, 170, 0.08);
+    border-left: 4px solid var(--bsl-yellow);
+    color: var(--bsl-text);
+    border-radius: 0 8px 8px 0;
+}
+
+.book-version {
+    color: var(--bsl-dim);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+}
+
+/* ─── Кнопка песочницы ────────────────────────────────────────────────── */
+
+.sandbox-bar {
+    background: var(--bsl-panel);
+    border-color: var(--bsl-border);
+    border-radius: 0 0 8px 8px;
+}
+
+.sandbox-run {
+    color: var(--bsl-teal);
+}
+
+.sandbox-note {
+    color: var(--bsl-muted);
+    opacity: 1;
+}
+
+/* ─── Печать: на бумаге чёрным по белому ──────────────────────────────── */
+
+@media print {
+    html, html.light, html.coal, html.navy, html.ayu {
+        --bg: #fff;
+        --fg: #000;
+    }
+
+    .content pre,
+    .content code,
+    .content blockquote,
+    .content table th {
+        background: transparent;
+        color: #000;
+        border-color: #999;
+    }
+}
