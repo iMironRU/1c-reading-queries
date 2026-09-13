@@ -662,6 +662,13 @@ PYSITE
         python3 scripts/search-index.py book metadata.yaml || \
             warn "Поисковый индекс не собран"
     fi
+
+    # Описание страницы, обложка и канонический адрес: mdBook оставляет
+    # описание пустым, и ссылка на книгу в мессенджере выглядит голым адресом.
+    if [[ -f scripts/site-meta.py ]]; then
+        python3 scripts/site-meta.py book metadata.yaml || \
+            warn "Мета-теги не дописаны"
+    fi
 }
 
 _generate_summary() {
