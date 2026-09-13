@@ -36,6 +36,9 @@ DEFAULT_SEVERITY = {
     #   style_lint: {severity: {backref: warning}}
     "backref": "off",
     "telling": "warning",   # рассказ там, где нужен показ
+    # Комментарий, слипшийся со следующей строкой: markdown втягивает её в
+    # html-блок, и заголовок или пункт списка перестают быть собой.
+    "comment": "warning",
     # Обращение к читателю. ВЫКЛЮЧЕНО по умолчанию: ядро канона «вы» разрешает
     # и просит. Включают книги, которые в своей надстройке объявили безличный
     # голос: style_lint: {severity: {impersonal: error}}
@@ -419,6 +422,18 @@ def check_file(path, cfg):
                 findings.append((sev("wide"), path, line, 1, "wide",
                                  f"артефакт шириной {widest} знаков — на телефоне "
                                  f"строка переносится (влезает около 46)"))
+
+    if sev("comment") != "off":
+        raw_lines = raw.split("\n")
+        for i, line in enumerate(raw_lines[:-1], 1):
+            if not (line.lstrip().startswith("<!--") and line.rstrip().endswith("-->")):
+                continue
+            nxt = raw_lines[i]
+            if nxt.strip() and not nxt.lstrip().startswith("<!--"):
+                findings.append((sev("comment"), path, i, 1, "comment",
+                                 "после комментария нет пустой строки — markdown втянет "
+                                 "следующую строку в html-блок, и заголовок или пункт "
+                                 "списка перестанут работать"))
 
     for code, (phrases, label) in PHRASES.items():
         if sev(code) == "off":
