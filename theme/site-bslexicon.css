@@ -205,9 +205,40 @@ samp,
     color: var(--bsl-teal);
 }
 
-#menu-bar {
+/* Селекторы по классу, а не по id: в свежем mdBook идентификаторы получили
+ * приставку mdbook- (#menu-bar → #mdbook-menu-bar), а классы не менялись. */
+.menu-bar {
     background: var(--bsl-bg);
     border-bottom: 1px solid var(--bsl-border);
+}
+
+/* Иконки в шапке: у mdBook они мельче заголовка и теряются. Размер задаём в
+ * пикселях — rem здесь означает 10 пикселей, и на нём легко промахнуться. */
+.menu-bar .icon-button,
+.menu-bar .icon-button i,
+.menu-bar .icon-button svg {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.menu-bar .icon-button svg {
+    width: 1em;
+    height: 1em;
+}
+
+.menu-bar .icon-button {
+    padding: 0 11px;
+    color: var(--bsl-muted);
+}
+
+.menu-bar .icon-button:hover,
+.menu-bar .icon-button:focus {
+    color: var(--bsl-teal);
+}
+
+.menu-title {
+    font-size: 1.15em;
+    color: var(--bsl-muted);
 }
 
 /* ─── Ссылки ──────────────────────────────────────────────────────────── */
@@ -304,4 +335,52 @@ samp,
         color: #000;
         border-color: #999;
     }
+}
+
+/* ===== Ответы под вопросами ============================================
+ * Кнопка держит тот же порядок, что и бумажная книга: сначала указание,
+ * потом ответ. Пока не нажали — на экране только вопрос. */
+
+.answer-block {
+    margin: 0.6em 0 1.2em;
+}
+
+.answer-toggle {
+    font-family: inherit;
+    font-size: 0.82em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--bsl-teal);
+    background: transparent;
+    border: 1px solid var(--bsl-border-hi);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.answer-toggle:hover,
+.answer-toggle:focus-visible {
+    border-color: var(--bsl-teal);
+    color: var(--bsl-teal);
+    outline: none;
+}
+
+.answer-body {
+    margin-top: 0.6em;
+    padding: 0.1em 0 0.1em 1em;
+    border-left: 2px solid var(--bsl-teal-dark);
+}
+
+.answer-body p {
+    margin: 0.5em 0;
+}
+
+.answer-hint p {
+    color: var(--bsl-muted);
+}
+
+.answers-note {
+    font-size: 0.92em;
+    color: var(--bsl-muted);
 }
