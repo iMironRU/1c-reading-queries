@@ -11,14 +11,14 @@ build-dir = "book"
 site-url = "/"
 git-repository-url = ""
 edit-url-template = ""
-additional-js = ["theme/version.js", "theme/status.js", "theme/sidebar-tap.js", "theme/answers.js"]
+additional-js = ["theme/version.js", "theme/status.js", "theme/sidebar-tap.js", "theme/answers.js", "theme/search-ru.js"]
 additional-css = ["theme/site-bslexicon.css", "theme/book-extra.css"]
 default-theme = "coal"
 preferred-dark-theme = "coal"
 no-section-label = true          # нумерация своя, в заголовках параграфов
 fold.enable = true
 fold.level = 0                  # главы свёрнуты; текущая раскрывается сама
-search.enable = true
+search.enable = false   # свой поиск: родной не понимает русского
 search.limit-results = 30
 search.teaser-word-count = 30
 

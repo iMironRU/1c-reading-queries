@@ -655,6 +655,13 @@ PYSITE
     ( cd "$stage" && mdbook build )
     rm -rf "$stage"
     rm -f book/book.toml   # служебный конфиг стенда в выводе не нужен
+
+    # Поиск по книге собираем сами: родной поиск mdBook русского не видит —
+    # индекс строится английским конвейером, и кириллица отбрасывается.
+    if [[ -f scripts/search-index.py ]]; then
+        python3 scripts/search-index.py book metadata.yaml || \
+            warn "Поисковый индекс не собран"
+    fi
 }
 
 _generate_summary() {

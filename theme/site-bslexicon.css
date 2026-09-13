@@ -384,3 +384,115 @@ samp,
     font-size: 0.92em;
     color: var(--bsl-muted);
 }
+
+/* ===== Поиск ============================================================
+ * Своя оболочка: родной поиск mdBook отключён, он не понимает русского. */
+
+.search-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(6, 7, 10, 0.82);
+    padding: 6vh 16px 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--bsl-panel);
+    border: 1px solid var(--bsl-border-hi);
+    border-radius: 10px;
+    padding: 10px 16px;
+}
+
+.search-input {
+    flex: 1;
+    font-family: inherit;
+    font-size: 1.05em;
+    color: var(--bsl-text);
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 6px 0;
+}
+
+.search-input::placeholder {
+    color: var(--bsl-dim);
+}
+
+.search-count {
+    font-size: 0.82em;
+    color: var(--bsl-muted);
+    white-space: nowrap;
+}
+
+.search-results {
+    max-width: 760px;
+    margin: 14px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-hit {
+    display: block;
+    padding: 12px 16px;
+    background: var(--bsl-panel);
+    border: 1px solid var(--bsl-border);
+    border-radius: 10px;
+    color: var(--bsl-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--bsl-border);
+}
+
+.search-hit:hover,
+.search-hit.is-current {
+    border-color: var(--bsl-teal-dark);
+    background: var(--bsl-panel-2);
+    color: var(--bsl-text);
+}
+
+.search-crumb {
+    display: block;
+    font-size: 0.78em;
+    letter-spacing: 0.03em;
+    color: var(--bsl-muted);
+}
+
+.search-head {
+    display: block;
+    margin: 2px 0 4px;
+    font-weight: 600;
+    color: var(--bsl-teal);
+}
+
+.search-teaser {
+    display: block;
+    font-size: 0.92em;
+    line-height: 1.5;
+    color: var(--bsl-muted);
+}
+
+.search-empty {
+    max-width: 760px;
+    margin: 18px auto;
+    color: var(--bsl-muted);
+    text-align: center;
+}
+
+mark {
+    background: rgba(78, 201, 176, 0.22);
+    color: var(--bsl-text);
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+html.search-open {
+    overflow: hidden;
+}
+
