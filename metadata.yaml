@@ -1,5 +1,6 @@
 title: "Чтение данных. Язык запросов 1С"
 subtitle: "Четвёртая книга линии «Чтение 1С»"
+series: "Линия «Чтение 1С» · книга четвёртая"
 slug: "1c-reading-queries"
 author: "iMironRU"
 author_url: "https://github.com/iMironRU"
@@ -8,7 +9,7 @@ license: "CC BY-NC-ND 4.0"
 version: "0.1.0"
 
 template_repo: "https://github.com/iMironRU/book-template"
-template_version: "v0.6.0"
+template_version: "v0.6.1"
 
 formats:
   epub:     true

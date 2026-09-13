@@ -202,7 +202,10 @@ class PageReader(HTMLParser):
         if tag in ("h1", "h2") and self._heading == tag:
             if tag == "h1":
                 self.title = " ".join("".join(self._cur["h"]).split())
-                self._cur = None
+                # Текст до первого подзаголовка — это «Открытие» параграфа, а в
+                # некоторых книгах и весь параграф: без него поиск слеп.
+                self._cur = {"h": "", "a": "", "x": []}
+                self.sections.append(self._cur)
             else:
                 self._cur["h"] = " ".join("".join(self._cur["h"]).split())
             self._heading = None

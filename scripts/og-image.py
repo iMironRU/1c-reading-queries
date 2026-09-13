@@ -11,6 +11,7 @@
 Запуск: python3 scripts/og-image.py [metadata.yaml]
 """
 
+import html
 import os
 import subprocess
 import sys
@@ -88,6 +89,9 @@ def readme_pitch(path="README.md", limit=180):
     if not os.path.exists(path):
         return ""
     text = re.sub(r"(?s)\A---.*?---\n", "", open(path, encoding="utf-8").read())
+    # README, оставшийся от шаблона, рассказывает про шаблон, а не про книгу
+    if re.search(r"^#\s.*book-template", text, flags=re.M):
+        return ""
     for block in text.split("\n\n"):
         # по канону серии строка о книге стоит цитатой сразу под названием
         block = " ".join(re.sub(r"(?m)^>\s?", "", block).split())
@@ -96,7 +100,14 @@ def readme_pitch(path="README.md", limit=180):
             continue
         if "](" in block or "http" in block:
             continue
-        block = re.sub(r"[*_`]", "", block)
+        block = re.sub(r"<[^>]+>", "", block)
+        block = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", block)
+        block = re.sub(r"[*_`]", "", block).strip()
+        # README, который ещё не переписан под книгу, рассказывает о шаблоне
+        if "Шаблон репозитория" in block or "Use this template" in block:
+            continue
+        if len(block) < 60:
+            continue
         if len(block) > limit:
             block = block[:limit].rsplit(" ", 1)[0] + "…"
         return block
@@ -113,15 +124,18 @@ def main():
     author = str(data.get("author") or "")
     author = author.split("(")[0].strip()
     site = str(data.get("site_url") or "").replace("https://", "").rstrip("/")
-    series = str(data.get("series") or "Серия «Чтение 1С»")
+    # Строка серии — только если книга и правда в серии.
+    series = str(data.get("series") or "")
     pitch = str(data.get("pitch") or "") or readme_pitch()
 
     # «1С» в названии — красным, как на обложке
     marked = title.replace("1С", '<span class="mark">1С</span>')
     size = 104 if len(title) <= 18 else (86 if len(title) <= 26 else 62)
 
-    page = PAGE.format(title=marked, subtitle=subtitle, author=author,
-                       site=site, series=series, size=size, pitch=pitch)
+    page = PAGE.format(title=marked, subtitle=html.escape(subtitle),
+                       author=html.escape(author), site=html.escape(site),
+                       series=html.escape(series), size=size,
+                       pitch=html.escape(pitch))
 
     out_dir = os.path.join("assets", "img")
     os.makedirs(out_dir, exist_ok=True)
